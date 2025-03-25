@@ -10,46 +10,42 @@ namespace FinanceTracker.Controllers
     public class PaycheckController : ControllerBase
     {
 
-        private readonly IDataAccessService<Paycheck> _dataAccessService;
+        private readonly IDataAccessService<Paycheck> _paycheckService;
+
+        private readonly IDataAccessService<WorkShift> _workShiftService;
 
 
-        PaycheckController(IDataAccessService<Paycheck> dataAccessService)
+
+        PaycheckController(IDataAccessService<Paycheck> paycheckService, IDataAccessService<WorkShift> workshiftService)
         {
-            _dataAccessService = dataAccessService;
+            _paycheckService = paycheckService;
+            _workShiftService = workshiftService;
         }
 
 
-
-        //<Controller>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET <Controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<Controller>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> RegisterWorkShift(WorkShift workShift)
         {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid model");
+            }
+            await _workShiftService.AddAsync(workShift);
+
+            return CreatedAtAction(nameof(RegisterWorkShift), workShift);
+
         }
 
-        // PUT api/<Controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpGet]
+        public async Task<Paycheck> GeneratePayCheckForMonth(int CVR, int month, int UserId)
         {
+
+            throw new NotImplementedException();
+
         }
 
-        // DELETE api/<Controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+
+
     }
 }
