@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\achih\\source\\repos\\FinanceTracker\\FinanceTracker\\FinanceTracker.csproj": {}
+    "C:\\Users\\ninja\\Desktop\\Skole\\4.semester\\Projekt 4\\FinanceTrackerBackend\\FinanceTracker\\FinanceTracker.csproj": {}
   },
   "projects": {
-    "C:\\Users\\achih\\source\\repos\\FinanceTracker\\FinanceTracker\\FinanceTracker.csproj": {
+    "C:\\Users\\ninja\\Desktop\\Skole\\4.semester\\Projekt 4\\FinanceTrackerBackend\\FinanceTracker\\FinanceTracker.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\achih\\source\\repos\\FinanceTracker\\FinanceTracker\\FinanceTracker.csproj",
+        "projectUniqueName": "C:\\Users\\ninja\\Desktop\\Skole\\4.semester\\Projekt 4\\FinanceTrackerBackend\\FinanceTracker\\FinanceTracker.csproj",
         "projectName": "FinanceTracker",
-        "projectPath": "C:\\Users\\achih\\source\\repos\\FinanceTracker\\FinanceTracker\\FinanceTracker.csproj",
-        "packagesPath": "C:\\Users\\achih\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\achih\\source\\repos\\FinanceTracker\\FinanceTracker\\obj\\",
+        "projectPath": "C:\\Users\\ninja\\Desktop\\Skole\\4.semester\\Projekt 4\\FinanceTrackerBackend\\FinanceTracker\\FinanceTracker.csproj",
+        "packagesPath": "C:\\Users\\ninja\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ninja\\Desktop\\Skole\\4.semester\\Projekt 4\\FinanceTrackerBackend\\FinanceTracker\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\achih\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ninja\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -45,7 +45,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -95,7 +95,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.104/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

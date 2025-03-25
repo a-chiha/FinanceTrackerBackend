@@ -2,7 +2,6 @@
 
 namespace FinanceTracker.Models;
 
-
 public class WorkShift
 {
 
