@@ -35,8 +35,8 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
-.FinanceTracker/bin/
-.FinanceTracker/obj/
+./FinanceTracker/bin/*
+./FinanceTracker/obj/*
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

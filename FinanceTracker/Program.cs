@@ -10,13 +10,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+
+
 var connectionString = builder.Configuration.GetConnectionString("FinanceTrackerContext");
 builder.Services.AddDbContext<FinanceTrackerContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
+builder.Services.AddScoped(typeof(IDataAccessService<>), typeof(DataAccessService<>));
 
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
