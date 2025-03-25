@@ -18,4 +18,5 @@ public class FinanceTrackerContext : DbContext
     public DbSet<SuPayment> SuPayments { get; set; }
     public DbSet<SupplementPay> supplementPays { get; set; }
 
+
 }
