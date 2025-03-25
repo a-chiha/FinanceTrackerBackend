@@ -1,4 +1,4 @@
-using FinanceTracker;
+using FinanceTracker.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,14 +10,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var connectionString =
-    "Data Source=127.0.0.1,1433;Database=DAB_E22;User Id=sa;Password=Guk85vju!;TrustServerCertificate=True";
-builder.Services.AddDbContext<FinanceTrackerContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddScoped<FinanceTrackerContext>();
 var app = builder.Build();
+var connectionString = builder.Configuration.GetConnectionString("FinanceTrackerContext");
+builder.Services.AddDbContext<FinanceTrackerContext>(options =>
+{
+    options.UseSqlServer(connectionString);
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

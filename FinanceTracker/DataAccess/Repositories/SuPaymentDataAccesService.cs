@@ -1,21 +1,21 @@
-﻿using FinanceTracker.Interfaces;
+﻿using FinanceTracker.DataAccess.Interfaces;
 using FinanceTracker.Models;
 
-namespace FinanceTracker.Services
+namespace FinanceTracker.DataAccess.Services
 {
-    public class WorkShiftDataAccesService : IDataAccessService<WorkShift>
+    public class SuPaymentDataAccesService : IDataAccessService<SuPayment>
     {
-        public Task<IEnumerable<WorkShift>> GetAllAsync()
+        public Task<IEnumerable<SuPayment>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<WorkShift> GetByIdAsync(int id)
+        public Task<SuPayment> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task AddAsync(WorkShift entity)
+        public Task AddAsync(SuPayment entity)
         {
             throw new NotImplementedException();
         }
@@ -25,7 +25,7 @@ namespace FinanceTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(WorkShift entity)
+        public Task UpdateAsync(SuPayment entity)
         {
             throw new NotImplementedException();
         }

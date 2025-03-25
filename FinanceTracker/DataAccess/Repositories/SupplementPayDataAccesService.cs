@@ -1,21 +1,21 @@
-﻿using FinanceTracker.Interfaces;
+﻿using FinanceTracker.DataAccess.Interfaces;
 using FinanceTracker.Models;
 
-namespace FinanceTracker.Services
+namespace FinanceTracker.DataAccess.Services
 {
-    public class UserDataAccesService : IDataAccessService<User>
+    public class SupplementPayDataAccesService : IDataAccessService<SupplementDetails>
     {
-        public Task<IEnumerable<User>> GetAllAsync()
+        public Task<IEnumerable<SupplementDetails>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<User> GetByIdAsync(int id)
+        public Task<SupplementDetails> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task AddAsync(User entity)
+        public Task AddAsync(SupplementDetails entity)
         {
             throw new NotImplementedException();
         }
@@ -25,7 +25,7 @@ namespace FinanceTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(User entity)
+        public Task UpdateAsync(SupplementDetails entity)
         {
             throw new NotImplementedException();
         }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using FinanceTracker.Models;
-namespace FinanceTracker;
+namespace FinanceTracker.DataAccess;
 
 public class FinanceTrackerContext : DbContext
 {
