@@ -1,21 +1,21 @@
-﻿using FinanceTracker.Interfaces;
+﻿using FinanceTracker.DataAccess.Interfaces;
 using FinanceTracker.Models;
 
-namespace FinanceTracker.Services
+namespace FinanceTracker.DataAccess.Services
 {
-    public class PaycheckDataAccesService : IDataAccessService<Paycheck>
+    public class HolidayPayDataAccesService : IDataAccessService<HolidayPay>
     {
-        public Task<IEnumerable<Paycheck>> GetAllAsync()
+        public Task<IEnumerable<HolidayPay>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Paycheck> GetByIdAsync(int id)
+        public Task<HolidayPay> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task AddAsync(Paycheck entity)
+        public Task AddAsync(HolidayPay entity)
         {
             throw new NotImplementedException();
         }
@@ -25,9 +25,10 @@ namespace FinanceTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(Paycheck entity)
+        public Task UpdateAsync(HolidayPay entity)
         {
             throw new NotImplementedException();
         }
     }
+
 }
