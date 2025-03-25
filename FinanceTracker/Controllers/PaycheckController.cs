@@ -1,5 +1,4 @@
-﻿using FinanceTracker.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,7 +8,8 @@ namespace FinanceTracker.Controllers
     [ApiController]
     public class PaycheckController : ControllerBase
     {
-        // GET: api/<Controller>
+
+        //<Controller>
         [HttpGet]
         public IEnumerable<string> Get()
         {
