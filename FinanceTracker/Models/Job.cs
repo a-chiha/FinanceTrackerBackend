@@ -13,4 +13,5 @@ public class Job
     public decimal HourlyRate { get; set; }
     public int UserId { get; set; }
     public User User { get; set; }
+    public ICollection<SupplementDetails> SupplementDetails { get; set; }
 }

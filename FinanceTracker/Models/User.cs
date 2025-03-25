@@ -8,4 +8,7 @@ public class User
 
     public string PhoneNumber { get; set; }
     public ICollection<Job> Job { get; set; }
+    public Account Account { get; set; }
+    public ICollection<WorkShift> WorkShift { get; set; }
+
 }

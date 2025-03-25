@@ -11,6 +11,6 @@ public class WorkShift
     public int UserId { get; set; }
     public User User { get; set; }
 
-    //public Paycheck
+    public Paycheck Paycheck { get; set; }
 
 }

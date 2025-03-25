@@ -10,13 +10,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
-var connectionString = builder.Configuration.GetConnectionString("FinanceTrackerContext");
-builder.Services.AddDbContext<FinanceTrackerContext>(options =>
-{
-    options.UseSqlServer(connectionString);
-});
 
+//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString =
+    "Data Source=127.0.0.1,1433;Database=DAB_E22;User Id=sa;Password=Guk85vju!;TrustServerCertificate=True";
+builder.Services.AddDbContext<FinanceTrackerContext>(options =>
+    options.UseSqlServer(connectionString));
+builder.Services.AddScoped<FinanceTrackerContext>();
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

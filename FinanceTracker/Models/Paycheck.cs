@@ -17,5 +17,7 @@ namespace FinanceTracker.Models
 
         public decimal AMContribution { get; set; }
         public TimeOnly WorkedHours { get; set; }
+
+        public ICollection<WorkShift> WorkShift { get; set; }
     }
 }

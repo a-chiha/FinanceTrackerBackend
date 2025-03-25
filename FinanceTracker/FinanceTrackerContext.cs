@@ -16,7 +16,7 @@ public class FinanceTrackerContext : DbContext
     public DbSet<Paycheck> Paychecks { get; set; }
     public DbSet<Account> Accounts { get; set; }
     public DbSet<SuPayment> SuPayments { get; set; }
-    public DbSet<SupplementPay> supplementPays { get; set; }
+    public DbSet<SupplementDetails> supplementPays { get; set; }
 
 
 }
