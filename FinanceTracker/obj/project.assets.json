@@ -5236,23 +5236,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ninja\\.nuget\\packages\\": {},
+    "C:\\Users\\alnaj\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ninja\\Desktop\\Skole\\4.semester\\Projekt 4\\FinanceTrackerBackend\\FinanceTracker\\FinanceTracker.csproj",
+      "projectUniqueName": "C:\\Data\\Itm8\\Repositories\\4semester\\4SemesterProjekt\\FinanceTrackerBackend\\FinanceTracker\\FinanceTracker.csproj",
       "projectName": "FinanceTracker",
-      "projectPath": "C:\\Users\\ninja\\Desktop\\Skole\\4.semester\\Projekt 4\\FinanceTrackerBackend\\FinanceTracker\\FinanceTracker.csproj",
-      "packagesPath": "C:\\Users\\ninja\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ninja\\Desktop\\Skole\\4.semester\\Projekt 4\\FinanceTrackerBackend\\FinanceTracker\\obj\\",
+      "projectPath": "C:\\Data\\Itm8\\Repositories\\4semester\\4SemesterProjekt\\FinanceTrackerBackend\\FinanceTracker\\FinanceTracker.csproj",
+      "packagesPath": "C:\\Users\\alnaj\\.nuget\\packages\\",
+      "outputPath": "C:\\Data\\Itm8\\Repositories\\4semester\\4SemesterProjekt\\FinanceTrackerBackend\\FinanceTracker\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\ninja\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\alnaj\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -5330,7 +5330,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
