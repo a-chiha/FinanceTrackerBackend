@@ -8,6 +8,6 @@ public class Account
 {
     public string Email { get; set; }
     public byte[] Password { get; set; }
-    public int UserId { get; set; }
-    public User User { get; set; }
+    public string UserId { get; set; }
+    public FinanceUser User { get; set; }
 }

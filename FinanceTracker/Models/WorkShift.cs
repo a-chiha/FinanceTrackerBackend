@@ -9,7 +9,7 @@ public class WorkShift
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
     public int UserId { get; set; }
-    public User User { get; set; }
+    public FinanceUser User { get; set; }
 
     public Paycheck Paycheck { get; set; }
 
