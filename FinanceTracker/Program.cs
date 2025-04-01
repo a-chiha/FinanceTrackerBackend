@@ -1,8 +1,8 @@
 using FinanceTracker.DataAccess;
 using FinanceTracker.Models;
-using FinanceTracker.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -16,8 +16,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.ParameterFilter<SortColumnFilter>();
-    options.ParameterFilter<SortOrderFilter>();
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -48,6 +46,27 @@ builder.Services.AddDbContext<FinanceTrackerContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
+builder.Services.AddControllers(options =>
+{
+    options.ModelBindingMessageProvider.SetValueIsInvalidAccessor(
+        (x) => $"The value '{x}' is invalid.");
+    options.ModelBindingMessageProvider.SetValueMustBeANumberAccessor(
+        (x) => $"The field {x} must be a number.");
+    options.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor(
+        (x, y) => $"The value '{x}' is not valid for {y}.");
+    options.ModelBindingMessageProvider.SetMissingKeyOrValueAccessor(
+        () => $"A value is required.");
+
+    options.CacheProfiles.Add("NoCache",
+        new CacheProfile() { NoStore = true });
+    options.CacheProfiles.Add("Any-60",
+        new CacheProfile() { Location = ResponseCacheLocation.Any, Duration = 60 });
+    options.CacheProfiles.Add("Any-1hour",
+        new CacheProfile() { Location = ResponseCacheLocation.Any, Duration = 3600 });
+    options.CacheProfiles.Add("Client-1day",
+        new CacheProfile() { Location = ResponseCacheLocation.Client, Duration = 86400 });
+});
+
 builder.Services.AddScoped(typeof(IDataAccessService<>), typeof(DataAccessService<>));
 builder.Services.AddIdentity<FinanceUser, IdentityRole>(options =>
     {

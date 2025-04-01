@@ -10,6 +10,8 @@ using System.Security.Claims;
 
 namespace FinanceTracker.Controllers
 {
+    [Route("[Controller]")]
+    [ApiController]
     public class AccountController : ControllerBase
     {
         private readonly FinanceTrackerContext _context;
@@ -29,7 +31,7 @@ namespace FinanceTracker.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<ActionResult> Register(RegisterDTO input)
         {
