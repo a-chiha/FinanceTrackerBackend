@@ -16,20 +16,9 @@ public class FinanceTrackerContext : IdentityDbContext<FinanceUser>
     public DbSet<Job> Jobs { get; set; }
     public DbSet<HolidayPay> HolidayPays { get; set; }
     public DbSet<Paycheck> Paychecks { get; set; }
-    public DbSet<Account> Accounts { get; set; }
     public DbSet<SuPayment> SuPayments { get; set; }
     public DbSet<SupplementDetails> supplementPays { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<Account>()
-            .HasOne(a => a.User)         // Account har én bruger
-            .WithOne(u => u.Account)     // FinanceUser har én Account
-            .HasForeignKey<Account>(a => a.UserId) // Account bruger UserId som FK
-            .IsRequired();  // Sikrer at en konto altid har en bruger
-    }
 
 
 }

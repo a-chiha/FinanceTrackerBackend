@@ -42,7 +42,6 @@ namespace FinanceTracker.Controllers
                     var newUser = new FinanceUser();
                     newUser.UserName = input.Email;
                     newUser.Email = input.Email;
-                    newUser.Name = input.FullName;
                     var result = await _userManager.CreateAsync(
                     newUser, input.Password);
                     if (result.Succeeded)
