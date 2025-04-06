@@ -6,7 +6,7 @@ namespace FinanceTracker.Models;
 [PrimaryKey(nameof(FinanceUserId), nameof(CVR))]
 public class Job
 {
-
+    public int JobId { get; set; }
     public string TaxCard { get; set; }
     public string EmploymentType { get; set; }
     public int CVR { get; set; }
