@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinanceTracker.Models;
 
-[PrimaryKey(nameof(UserId), nameof(CVR))]
+[PrimaryKey(nameof(FinanceUserId), nameof(CVR))]
 public class Job
 {
 
@@ -11,7 +11,7 @@ public class Job
     public string EmploymentType { get; set; }
     public int CVR { get; set; }
     public decimal HourlyRate { get; set; }
-    public int UserId { get; set; }
+    public int FinanceUserId { get; set; }
     public FinanceUser User { get; set; }
     public ICollection<SupplementDetails> SupplementDetails { get; set; }
 }
