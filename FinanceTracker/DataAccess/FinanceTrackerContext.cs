@@ -15,6 +15,7 @@ public class FinanceTrackerContext : IdentityDbContext<FinanceUser>
     public DbSet<WorkShift> WorkShifts { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Paycheck> Paychecks { get; set; }
+    public DbSet<PaycheckInfo> PaycheckInfos { get; set; }
     public DbSet<SupplementDetails> supplementPays { get; set; }
 
 
