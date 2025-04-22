@@ -13,7 +13,7 @@ namespace FinanceTracker.Models
         public decimal Pension { get; set; }
         public decimal Holidaycompensation { get; set; }
 
-        public decimal taxDeduction { get; set; }
+        public decimal TaxDeduction { get; set; }
 
         public decimal AMContribution { get; set; }
         public TimeOnly WorkedHours { get; set; }
