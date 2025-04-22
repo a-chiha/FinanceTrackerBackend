@@ -1,13 +1,12 @@
 using FinanceTracker.DataAccess;
 using FinanceTracker.Models;
-using FinanceTracker.Services.Implementations;
-using FinanceTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +47,7 @@ builder.Services.AddDbContext<FinanceTrackerContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
+
 builder.Services.AddControllers(options =>
 {
     options.ModelBindingMessageProvider.SetValueIsInvalidAccessor(
@@ -103,6 +103,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    var context = serviceProvider.GetRequiredService<FinanceTrackerContext>();
+    context.Database.Migrate();
+    Dbseeder.Initialize(context);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

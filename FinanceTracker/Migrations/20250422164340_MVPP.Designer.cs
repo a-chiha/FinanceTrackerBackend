@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinanceTracker.Migrations
 {
     [DbContext(typeof(FinanceTrackerContext))]
-    [Migration("20250406112335_john")]
-    partial class john
+    [Migration("20250422164340_MVPP")]
+    partial class MVPP
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,99 +95,24 @@ namespace FinanceTracker.Migrations
 
             modelBuilder.Entity("FinanceTracker.Models.Job", b =>
                 {
-                    b.Property<int>("FinanceUserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("CVR")
                         .HasColumnType("int");
 
                     b.Property<string>("EmploymentType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("HourlyRate")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("JobId")
-                        .HasColumnType("int");
-
                     b.Property<string>("TaxCard")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("FinanceUserId", "CVR");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId", "CVR");
 
                     b.ToTable("Jobs");
-                });
-
-            modelBuilder.Entity("FinanceTracker.Models.Paycheck", b =>
-                {
-                    b.Property<DateOnly>("SalaryPeriod")
-                        .HasColumnType("date");
-
-                    b.Property<decimal>("AMContribution")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("HolidaySupplement")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Holidaycompensation")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Pension")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("SalarayBeforeTax")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Tax")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeOnly>("WorkedHours")
-                        .HasColumnType("time");
-
-                    b.Property<decimal>("taxDeduction")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("SalaryPeriod");
-
-                    b.ToTable("Paychecks");
-                });
-
-            modelBuilder.Entity("FinanceTracker.Models.SupplementDetails", b =>
-                {
-                    b.Property<TimeOnly>("StartTime")
-                        .HasColumnType("time");
-
-                    b.Property<TimeOnly>("EndTime")
-                        .HasColumnType("time");
-
-                    b.Property<int>("CVR")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("JobCVR")
-                        .HasColumnType("int");
-
-                    b.Property<int>("JobFinanceUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Weekday")
-                        .HasColumnType("int");
-
-                    b.HasKey("StartTime", "EndTime", "CVR");
-
-                    b.HasIndex("JobFinanceUserId", "JobCVR");
-
-                    b.ToTable("supplementPays");
                 });
 
             modelBuilder.Entity("FinanceTracker.Models.WorkShift", b =>
@@ -198,19 +123,10 @@ namespace FinanceTracker.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FinanceUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly>("PaycheckSalaryPeriod")
-                        .HasColumnType("date");
-
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("StartTime", "EndTime", "FinanceUserId");
-
-                    b.HasIndex("PaycheckSalaryPeriod");
+                    b.HasKey("StartTime", "EndTime", "UserId");
 
                     b.HasIndex("UserId");
 
@@ -354,37 +270,20 @@ namespace FinanceTracker.Migrations
                 {
                     b.HasOne("FinanceTracker.Models.FinanceUser", "User")
                         .WithMany("Jobs")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinanceTracker.Models.SupplementDetails", b =>
-                {
-                    b.HasOne("FinanceTracker.Models.Job", "Job")
-                        .WithMany("SupplementDetails")
-                        .HasForeignKey("JobFinanceUserId", "JobCVR")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Job");
-                });
-
             modelBuilder.Entity("FinanceTracker.Models.WorkShift", b =>
                 {
-                    b.HasOne("FinanceTracker.Models.Paycheck", "Paycheck")
-                        .WithMany("WorkShift")
-                        .HasForeignKey("PaycheckSalaryPeriod")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FinanceTracker.Models.FinanceUser", "User")
                         .WithMany("WorkShifts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Paycheck");
 
                     b.Navigation("User");
                 });
@@ -445,16 +344,6 @@ namespace FinanceTracker.Migrations
                     b.Navigation("Jobs");
 
                     b.Navigation("WorkShifts");
-                });
-
-            modelBuilder.Entity("FinanceTracker.Models.Job", b =>
-                {
-                    b.Navigation("SupplementDetails");
-                });
-
-            modelBuilder.Entity("FinanceTracker.Models.Paycheck", b =>
-                {
-                    b.Navigation("WorkShift");
                 });
 #pragma warning restore 612, 618
         }
