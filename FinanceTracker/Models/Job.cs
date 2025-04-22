@@ -20,6 +20,6 @@ public class Job
     public ICollection<SupplementDetails> SupplementDetails { get; set; }
 
 
- 
+
 
 }

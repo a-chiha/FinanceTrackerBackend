@@ -4,6 +4,7 @@ using FinanceTracker.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinanceTracker.Migrations
 {
     [DbContext(typeof(FinanceTrackerContext))]
-    partial class FinanceTrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20250422111752_paycheckinfoupdate")]
+    partial class paycheckinfoupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -242,23 +245,23 @@ namespace FinanceTracker.Migrations
                     b.Property<int>("FinanceUserId")
                         .HasColumnType("int");
 
+                    b.Property<string>("FinanceUserId1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("PaycheckId")
                         .HasColumnType("int");
 
                     b.Property<DateOnly?>("PaycheckSalaryPeriod")
                         .HasColumnType("date");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("StartTime", "EndTime", "FinanceUserId");
+
+                    b.HasIndex("FinanceUserId1");
 
                     b.HasIndex("PaycheckId");
 
                     b.HasIndex("PaycheckSalaryPeriod");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("WorkShifts");
                 });
@@ -434,6 +437,12 @@ namespace FinanceTracker.Migrations
 
             modelBuilder.Entity("FinanceTracker.Models.WorkShift", b =>
                 {
+                    b.HasOne("FinanceTracker.Models.FinanceUser", "FinanceUser")
+                        .WithMany("WorkShifts")
+                        .HasForeignKey("FinanceUserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FinanceTracker.Models.PaycheckInfo", "Paycheck")
                         .WithMany("WorkShifts")
                         .HasForeignKey("PaycheckId")
@@ -444,15 +453,9 @@ namespace FinanceTracker.Migrations
                         .WithMany("WorkShifts")
                         .HasForeignKey("PaycheckSalaryPeriod");
 
-                    b.HasOne("FinanceTracker.Models.FinanceUser", "User")
-                        .WithMany("WorkShifts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("FinanceUser");
 
                     b.Navigation("Paycheck");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

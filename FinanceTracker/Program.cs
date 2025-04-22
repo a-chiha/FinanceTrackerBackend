@@ -1,5 +1,7 @@
 using FinanceTracker.DataAccess;
 using FinanceTracker.Models;
+using FinanceTracker.Services.Implementations;
+using FinanceTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

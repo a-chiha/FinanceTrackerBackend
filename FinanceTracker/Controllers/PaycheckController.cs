@@ -1,4 +1,5 @@
-﻿using FinanceTracker.Models;
+﻿using FinanceTracker.DTO;
+using FinanceTracker.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,24 +17,32 @@ namespace FinanceTracker.Controllers
 
 
 
-        PaycheckController(IDataAccessService<Paycheck> paycheckService, IDataAccessService<WorkShift> workshiftService)
+        public PaycheckController(IDataAccessService<Paycheck> paycheckService, IDataAccessService<WorkShift> workshiftService)
         {
             _paycheckService = paycheckService;
             _workShiftService = workshiftService;
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> RegisterWorkShift(WorkShift workShift)
+        [HttpPost("registerWorkshift")]
+        [ResponseCache(CacheProfileName = "NoCache")]
+        public async Task<IActionResult> RegisterWorkShift(WorkShiftDTO workShift)
         {
 
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || workShift.FinanceUserId <= 0)
             {
                 return BadRequest("Invalid model");
             }
-            await _workShiftService.AddAsync(workShift);
+            var entity = new WorkShift
+            {
+                StartTime = workShift.StartTime,
+                EndTime = workShift.EndTime,
+                FinanceUserId = workShift.FinanceUserId,
+            };
 
-            return CreatedAtAction(nameof(RegisterWorkShift), workShift);
+            await _workShiftService.AddAsync(entity);
+
+            return CreatedAtAction(nameof(RegisterWorkShift), entity);
 
         }
 

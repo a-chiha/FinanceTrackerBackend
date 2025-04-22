@@ -68,7 +68,7 @@ namespace FinanceTracker.Services.Implementations
             }
 
             return totalWorkedHours;
-        }        
+        }
 
         public async Task<List<WorkShift>> GetWorkShiftsAsync(int paycheckInfoId) // Tilføj validering af datoer
         {

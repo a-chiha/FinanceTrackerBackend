@@ -20,4 +20,5 @@ public class FinanceTrackerContext : IdentityDbContext<FinanceUser>
 
 
 
+
 }
