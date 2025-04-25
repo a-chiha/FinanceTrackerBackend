@@ -72,8 +72,8 @@ namespace FinanceTracker.Controllers
                 totalWorkedHours += workShift.EndTime - workShift.StartTime;
             }
             decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate;
-            decimal AMcontribution = baseSalary * 0.08m;
-            decimal SalarayafterAM = baseSalary - AMcontribution;
+            decimal amcontribution = baseSalary * 0.08m;
+            decimal salarayafterAM = baseSalary - AMcontribution;
             decimal tax = 0.37m;
             decimal taxDeduction = SalarayafterAM * tax;
             decimal salaryAfterTax = SalarayafterAM - taxDeduction;
@@ -84,7 +84,7 @@ namespace FinanceTracker.Controllers
                 WorkedHours = totalWorkedHours,
                 AMContribution = AMcontribution,
                 Tax = tax,
-                SalarayAfterTax = salaryAfterTax
+                SalarayAfterTax = salaryAfterTax,
 
             };
 
