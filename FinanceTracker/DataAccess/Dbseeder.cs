@@ -1,11 +1,14 @@
 ﻿using FinanceTracker.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
 
 namespace FinanceTracker.DataAccess
 {
     public class Dbseeder
     {
-
         public static void Initialize(FinanceTrackerContext context)
         {
 
@@ -13,31 +16,21 @@ namespace FinanceTracker.DataAccess
             {
                 StartTime = new DateTime(2025, 4, 10, 9, 0, 0),
                 EndTime = new DateTime(2025, 4, 10, 17, 0, 0),
-                UserId = "5aa9bf7e-2963-4284-8b5f-bd2ac34738f5",
+                UserId = "ce9dc970-8ba1-4aee-af0f-6082a244800a",
             };
+            
             var workshift1 = new WorkShift
             {
                 StartTime = new DateTime(2025, 4, 11, 9, 0, 0),
                 EndTime = new DateTime(2025, 4, 11, 17, 0, 0),
-                UserId = "5aa9bf7e-2963-4284-8b5f-bd2ac34738f5",
+                UserId = "ce9dc970-8ba1-4aee-af0f-6082a244800a",
             };
-            var workshift2 = new WorkShift
-            {
-                StartTime = new DateTime(2025, 4, 12, 9, 0, 0),
-                EndTime = new DateTime(2025, 4, 12, 17, 0, 0),
-                UserId = "5aa9bf7e-2963-4284-8b5f-bd2ac34738f5",
-            };
-            var workshift3 = new WorkShift
-            {
-                StartTime = new DateTime(2025, 4, 13, 9, 0, 0),
-                EndTime = new DateTime(2025, 4, 13, 17, 0, 0),
-                UserId = "5aa9bf7e-2963-4284-8b5f-bd2ac34738f5",
-            };
+            
             var job = new Job
             {
                 CVR = 1,
                 HourlyRate = 150,
-                UserId = "5aa9bf7e-2963-4284-8b5f-bd2ac34738f5"
+                UserId = "ce9dc970-8ba1-4aee-af0f-6082a244800a"
             };
 
             context.WorkShifts.Add(workshift);
@@ -45,8 +38,8 @@ namespace FinanceTracker.DataAccess
             context.WorkShifts.Add(workshift2);
             context.WorkShifts.Add(workshift3);
             context.Jobs.Add(job);
+            
             context.SaveChanges();
-
         }
     }
 }
