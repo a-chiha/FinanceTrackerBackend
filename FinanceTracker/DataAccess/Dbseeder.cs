@@ -12,6 +12,34 @@ namespace FinanceTracker.DataAccess
         public static void Initialize(FinanceTrackerContext context)
         {
 
+            if (context.Users.Any() || context.WorkShifts.Any() || context.Jobs.Any())
+            {
+                return;
+            }
+
+            // We need to manually create a FinanceUser and save it
+            var user = new FinanceUser
+            {
+                UserName = "testuser@example.com",
+                Email = "testuser@example.com",
+                Age = 25,
+                EmailConfirmed = true,
+                NormalizedEmail = "TESTUSER@EXAMPLE.COM",
+                NormalizedUserName = "TESTUSER@EXAMPLE.COM",
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+
+            // Set a password hash (this is a placeholder - normally would use a password hasher)
+            user.PasswordHash = new PasswordHasher<FinanceUser>().HashPassword(user, "Test@123");
+
+            // Add the user directly to the context
+            context.Users.Add(user);
+            context.SaveChanges();
+
+            // Get the user's ID
+            var userId = user.Id;
+
+
             var workshift = new WorkShift
             {
                 StartTime = new DateTime(2025, 4, 10, 9, 0, 0),
@@ -28,7 +56,7 @@ namespace FinanceTracker.DataAccess
 
             var job = new Job
             {
-                CVR = 1,
+                CompanyName = "Demderveddet",
                 HourlyRate = 150,
                 UserId = "ce9dc970-8ba1-4aee-af0f-6082a244800a"
             };

@@ -1,83 +1,107 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
+using FinanceTracker.DTO;
+using FinanceTracker.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FinanceTracker.Controllers
 {
-    public class JobController : Controller
+    [Route("[controller]")]
+    [ApiController]
+
+    public class JobController : ControllerBase
     {
-        // GET: JobController
-        public ActionResult Index()
+        private readonly IDataAccessService<Job> _job;
+        private readonly IDataAccessService<FinanceUser> _user;
+
+        public JobController(IDataAccessService<Job> job, IDataAccessService<FinanceUser> financeUser)
         {
-            return View();
+            _job = job;
+            _user = financeUser;
         }
 
-        // GET: JobController/Details/5
-        public ActionResult Details(int id)
+        [HttpPost("RegisterJob")]
+        [Authorize]
+        [ResponseCache(CacheProfileName = "NoCache")]
+        public async Task<ActionResult> RegisterJob(JobDTO job)
         {
-            return View();
-        }
-
-        // GET: JobController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: JobController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return BadRequest("Invalid model");
             }
-            catch
+            var user = await _user.GetByIdAsync(userId);
+            var entity = new Job()
             {
-                return View();
-            }
+                CompanyName = job.CompanyName,
+                HourlyRate = job.HourlyRate,
+                EmploymentType = job.EmploymentType,
+                TaxCard = job.TaxCard,
+                UserId = userId,
+                User = user
+            };
+            await _job.AddAsync(entity);
+            return Ok(entity);
         }
 
-        // GET: JobController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpPost("UpdateJob")]
+        [Authorize]
+        [ResponseCache(CacheProfileName = "NoCache")]
+        public async Task<ActionResult> UpdateJob(JobDTO job)
         {
-            return View();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid model");
+            }
+            var jobToUpdate = await _job.GetFirstOrDefaultAsync(x => x.UserId == userId && x.CompanyName == job.CompanyName);
+            if (jobToUpdate == null)
+            {
+                return NotFound("Job not found");
+            }
+            jobToUpdate.CompanyName = job.CompanyName;
+            jobToUpdate.HourlyRate = job.HourlyRate;
+            jobToUpdate.EmploymentType = job.EmploymentType;
+            jobToUpdate.TaxCard = job.TaxCard;
+            await _job.UpdateAsync(jobToUpdate);
+            return Ok(jobToUpdate);
         }
 
-        // POST: JobController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpGet("GetAllJobsForUser")]
+        [Authorize]
+        [ResponseCache(CacheProfileName = "NoCache")]
+        public async Task<IActionResult> GetAllJobsForUser()
         {
-            try
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return BadRequest("error bad model");
             }
-            catch
+            var userJobs = await _job.GetFilteredAsync(x => x.UserId == userId);
+            if (userJobs == null)
             {
-                return View();
+                return NotFound("Job not found for ");
             }
+            
+            return  Ok(userJobs);
+
         }
 
-        // GET: JobController/Delete/5
-        public ActionResult Delete(int id)
+        [HttpDelete("DeleteJob")]
+        [Authorize]
+        [ResponseCache(CacheProfileName = "NoCache")]
+        public async Task<IActionResult> DeleteJob(string companyName)
         {
-            return View();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (companyName.IsNullOrEmpty()) return BadRequest("error please provide a company name");
+            var jobToDelete = await _job.GetByIdAsync(companyName, userId);
+            if (jobToDelete == null) return NotFound("Job not found");
+           await _job.DeleteAsync(jobToDelete);
+            return Ok();
         }
 
-        // POST: JobController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }
