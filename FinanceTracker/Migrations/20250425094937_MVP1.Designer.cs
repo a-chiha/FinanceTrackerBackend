@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinanceTracker.Migrations
 {
     [DbContext(typeof(FinanceTrackerContext))]
-    [Migration("20250422164340_MVPP")]
-    partial class MVPP
+    [Migration("20250425094937_MVP1")]
+    partial class MVP1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,11 +95,11 @@ namespace FinanceTracker.Migrations
 
             modelBuilder.Entity("FinanceTracker.Models.Job", b =>
                 {
-                    b.Property<string>("UserId")
+                    b.Property<string>("CompanyName")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CVR")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("EmploymentType")
                         .HasColumnType("nvarchar(max)");
@@ -110,7 +110,9 @@ namespace FinanceTracker.Migrations
                     b.Property<string>("TaxCard")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId", "CVR");
+                    b.HasKey("CompanyName", "UserId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Jobs");
                 });

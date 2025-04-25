@@ -27,14 +27,14 @@ namespace FinanceTracker.DataAccess
                 NormalizedUserName = "TESTUSER@EXAMPLE.COM",
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-            
+
             // Set a password hash (this is a placeholder - normally would use a password hasher)
             user.PasswordHash = new PasswordHasher<FinanceUser>().HashPassword(user, "Test@123");
-            
+
             // Add the user directly to the context
             context.Users.Add(user);
             context.SaveChanges();
-            
+
             // Get the user's ID
             var userId = user.Id;
 
@@ -44,17 +44,17 @@ namespace FinanceTracker.DataAccess
                 EndTime = new DateTime(2025, 4, 10, 17, 0, 0),
                 UserId = userId,
             };
-            
+
             var workshift1 = new WorkShift
             {
                 StartTime = new DateTime(2025, 4, 11, 9, 0, 0),
                 EndTime = new DateTime(2025, 4, 11, 17, 0, 0),
                 UserId = userId,
             };
-            
+
             var job = new Job
             {
-                CVR = 1,
+                CompanyName = "Demderveddet",
                 HourlyRate = 150,
                 EmploymentType = "FullTime",
                 TaxCard = "Primary",
@@ -64,7 +64,7 @@ namespace FinanceTracker.DataAccess
             context.WorkShifts.Add(workshift);
             context.WorkShifts.Add(workshift1);
             context.Jobs.Add(job);
-            
+
             context.SaveChanges();
         }
     }

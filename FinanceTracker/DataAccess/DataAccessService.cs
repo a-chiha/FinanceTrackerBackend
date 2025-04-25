@@ -1,6 +1,7 @@
 ﻿using FinanceTracker.DataAccess;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 
 public class DataAccessService<T> : IDataAccessService<T> where T : class
@@ -42,6 +43,13 @@ public class DataAccessService<T> : IDataAccessService<T> where T : class
         _dbSet.Remove(entity);
         await _context.SaveChangesAsync();
     }
+    public async Task<IEnumerable<T>> GetFilteredAsync(Expression<Func<T, bool>> filter)
+    {
+        return await _dbSet.Where(filter).ToListAsync();
+    }
 
-    
+    public async Task<T?> GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter)
+    {
+        return await _dbSet.FirstOrDefaultAsync(filter);
+    }
 }

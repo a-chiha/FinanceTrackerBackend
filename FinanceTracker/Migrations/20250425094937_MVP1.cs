@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FinanceTracker.Migrations
 {
     /// <inheritdoc />
-    public partial class MVP : Migration
+    public partial class MVP1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -161,15 +161,15 @@ namespace FinanceTracker.Migrations
                 name: "Jobs",
                 columns: table => new
                 {
-                    CVR = table.Column<int>(type: "int", nullable: false),
+                    CompanyName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TaxCard = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmploymentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TaxCard = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmploymentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HourlyRate = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Jobs", x => new { x.UserId, x.CVR });
+                    table.PrimaryKey("PK_Jobs", x => new { x.CompanyName, x.UserId });
                     table.ForeignKey(
                         name: "FK_Jobs_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -235,6 +235,11 @@ namespace FinanceTracker.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Jobs_UserId",
+                table: "Jobs",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkShifts_UserId",
