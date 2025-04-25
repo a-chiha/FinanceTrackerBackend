@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceTracker.Controllers
 {
-    public class JobController : Controller
+    [Route("[controller]")]
+    [ApiController]
+    public class JobController : ControllerBase
     {
+
         // GET: JobController
         public ActionResult Index()
         {
