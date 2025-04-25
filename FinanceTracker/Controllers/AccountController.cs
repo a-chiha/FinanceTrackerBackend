@@ -80,7 +80,7 @@ namespace FinanceTracker.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<ActionResult> Login(LoginDTO input)
         {

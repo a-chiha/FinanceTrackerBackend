@@ -11,6 +11,7 @@ namespace FinanceTracker.DataAccess
     {
         public static void Initialize(FinanceTrackerContext context)
         {
+
             if (context.Users.Any() || context.WorkShifts.Any() || context.Jobs.Any())
             {
                 return;
@@ -38,27 +39,26 @@ namespace FinanceTracker.DataAccess
             // Get the user's ID
             var userId = user.Id;
 
+
             var workshift = new WorkShift
             {
                 StartTime = new DateTime(2025, 4, 10, 9, 0, 0),
                 EndTime = new DateTime(2025, 4, 10, 17, 0, 0),
-                UserId = userId,
+                UserId = "ce9dc970-8ba1-4aee-af0f-6082a244800a",
             };
 
             var workshift1 = new WorkShift
             {
                 StartTime = new DateTime(2025, 4, 11, 9, 0, 0),
                 EndTime = new DateTime(2025, 4, 11, 17, 0, 0),
-                UserId = userId,
+                UserId = "ce9dc970-8ba1-4aee-af0f-6082a244800a",
             };
 
             var job = new Job
             {
                 CompanyName = "Demderveddet",
                 HourlyRate = 150,
-                EmploymentType = "FullTime",
-                TaxCard = "Primary",
-                UserId = userId
+                UserId = "ce9dc970-8ba1-4aee-af0f-6082a244800a"
             };
 
             context.WorkShifts.Add(workshift);
