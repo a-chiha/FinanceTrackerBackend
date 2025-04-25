@@ -73,16 +73,16 @@ namespace FinanceTracker.Controllers
             }
             decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate;
             decimal amcontribution = baseSalary * 0.08m;
-            decimal salarayafterAM = baseSalary - AMcontribution;
+            decimal salarayafterAM = baseSalary - amcontribution;
             decimal tax = 0.37m;
-            decimal taxDeduction = SalarayafterAM * tax;
-            decimal salaryAfterTax = SalarayafterAM - taxDeduction;
+            decimal taxDeduction = salarayafterAM * tax;
+            decimal salaryAfterTax = salarayafterAM - taxDeduction;
 
             var paycheck = new Paycheck()
             {
                 SalarayBeforeTax = baseSalary,
                 WorkedHours = totalWorkedHours,
-                AMContribution = AMcontribution,
+                AMContribution = amcontribution,
                 Tax = tax,
                 SalarayAfterTax = salaryAfterTax,
 
