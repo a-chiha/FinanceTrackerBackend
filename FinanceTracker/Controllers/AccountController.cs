@@ -80,7 +80,7 @@ namespace FinanceTracker.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<ActionResult> Login(LoginDTO input)
         {
@@ -99,6 +99,8 @@ namespace FinanceTracker.Controllers
                                 SecurityAlgorithms.HmacSha256);
                         var claims = new List<Claim>();
                         claims.Add(new Claim(ClaimTypes.Name, user.UserName));
+                        claims.Add(new Claim(ClaimTypes.Email, user.Email));
+                        claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
                         var jwtObject = new JwtSecurityToken(
                                 issuer: _configuration["JWT:Issuer"],
                                 audience: _configuration["JWT:Audience"],

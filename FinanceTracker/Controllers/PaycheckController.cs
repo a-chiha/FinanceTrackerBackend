@@ -1,8 +1,10 @@
 ﻿using FinanceTracker.DataAccess;
 using FinanceTracker.DTO;
 using FinanceTracker.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -29,17 +31,17 @@ namespace FinanceTracker.Controllers
             _job = job;
         }
 
-
         [HttpPost("registerWorkshift")]
+        [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<IActionResult> RegisterWorkShift(WorkShift workShift, string userId)
+        public async Task<IActionResult> RegisterWorkShift(WorkShift workShift)
         {
-
+            var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid model");
             }
-            var user = await _user.GetByIdAsync(userId);
+            var user = await _user.GetByIdAsync(UserId);
             var entity = new WorkShift
             {
                 StartTime = workShift.StartTime,
@@ -55,9 +57,13 @@ namespace FinanceTracker.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<IActionResult> GeneratePayCheckForMonth(int CVR, int month, string UserId)
+        public async Task<IActionResult> GeneratePayCheckForMonth(int CVR, int month)
         {
+
+            var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             if (!ModelState.IsValid)
             {
                 return BadRequest("404 error");
@@ -88,10 +94,9 @@ namespace FinanceTracker.Controllers
 
             };
 
-
-
             return Ok(paycheck);
         }
+
 
 
 
