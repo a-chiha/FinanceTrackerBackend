@@ -60,6 +60,7 @@ namespace FinanceTracker.Controllers
             {
                 return NotFound("Job not found");
             }
+
             jobDto.Adapt(jobToUpdate);
 
             await _job.UpdateAsync(jobToUpdate);
@@ -90,7 +91,7 @@ namespace FinanceTracker.Controllers
         [HttpDelete("DeleteJob/{companyName}")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<IActionResult> DeleteJob(string companyName)
+        public async Task<IActionResult> DeleteJob([FromQuery] string companyName)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (companyName.IsNullOrEmpty()) return BadRequest("error please provide a company name");
