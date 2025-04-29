@@ -79,6 +79,17 @@ builder.Services.AddIdentity<FinanceUser, IdentityRole>(options =>
         options.Password.RequiredLength = 8;
     })
     .AddEntityFrameworkStores<FinanceTrackerContext>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -118,6 +129,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
