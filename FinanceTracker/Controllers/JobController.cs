@@ -45,17 +45,17 @@ namespace FinanceTracker.Controllers
             return Ok(entity);
         }
 
-        [HttpPost("UpdateJob")]
+        [HttpPut("UpdateJob/{companyName}")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<ActionResult> UpdateJob(JobDTO jobDto)
+        public async Task<ActionResult> UpdateJob(string companyName, JobDTO jobDto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid model");
             }
-            var jobToUpdate = await _job.GetFirstOrDefaultAsync(x => x.UserId == userId && x.CompanyName == job.CompanyName);
+            var jobToUpdate = await _job.GetFirstOrDefaultAsync(x => x.UserId == userId && x.CompanyName == companyName);
             if (jobToUpdate == null)
             {
                 return NotFound("Job not found");
@@ -87,7 +87,7 @@ namespace FinanceTracker.Controllers
 
         }
 
-        [HttpDelete("DeleteJob")]
+        [HttpDelete("DeleteJob/{companyName}")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<IActionResult> DeleteJob(string companyName)

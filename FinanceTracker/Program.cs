@@ -104,13 +104,13 @@ builder.Services.AddAuthentication(options =>
 });
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var serviceProvider = scope.ServiceProvider;
-    var context = serviceProvider.GetRequiredService<FinanceTrackerContext>();
-    context.Database.Migrate();
-    Dbseeder.Initialize(context);
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var serviceProvider = scope.ServiceProvider;
+//    var context = serviceProvider.GetRequiredService<FinanceTrackerContext>();
+//  //  context.Database.Migrate();
+//    Dbseeder.Initialize(context);
+//}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
