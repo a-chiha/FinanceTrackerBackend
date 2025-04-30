@@ -34,7 +34,7 @@ namespace FinanceTracker.Controllers
         [HttpPost("RegisterWorkshift")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<IActionResult> RegisterWorkShift(WorkShift workShift)
+        public async Task<IActionResult> RegisterWorkShift(WorkShiftDTO workShift)
         {
             var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!ModelState.IsValid)
