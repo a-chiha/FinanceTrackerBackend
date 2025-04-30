@@ -6,5 +6,6 @@
         public decimal HourlyRate { get; set; }
         public string EmploymentType { get; set; }
         public string TaxCard { get; set; }
+        public string? Title { get; set; }
     }
 }

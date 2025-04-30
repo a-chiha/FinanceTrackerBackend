@@ -8,6 +8,7 @@ namespace FinanceTracker.Models;
 [PrimaryKey(nameof(CompanyName), nameof(UserId))]
 public class Job
 {
+    public string? Title { get; set; }
     public string? TaxCard { get; set; }
     public string? EmploymentType { get; set; }
     public string CompanyName { get; set; }

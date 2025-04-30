@@ -79,6 +79,17 @@ builder.Services.AddIdentity<FinanceUser, IdentityRole>(options =>
         options.Password.RequiredLength = 8;
     })
     .AddEntityFrameworkStores<FinanceTrackerContext>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -104,13 +115,13 @@ builder.Services.AddAuthentication(options =>
 });
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var serviceProvider = scope.ServiceProvider;
-    var context = serviceProvider.GetRequiredService<FinanceTrackerContext>();
-    context.Database.Migrate();
-    Dbseeder.Initialize(context);
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var serviceProvider = scope.ServiceProvider;
+//    var context = serviceProvider.GetRequiredService<FinanceTrackerContext>();
+//  //  context.Database.Migrate();
+//    Dbseeder.Initialize(context);
+//}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -118,6 +129,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

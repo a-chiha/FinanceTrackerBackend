@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using FinanceTracker.DTO;
 using FinanceTracker.Models;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ namespace FinanceTracker.Controllers
         [HttpPost("RegisterJob")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<ActionResult> RegisterJob(JobDTO job)
+        public async Task<ActionResult> RegisterJob(JobDTO jobDto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!ModelState.IsValid)
@@ -34,38 +35,34 @@ namespace FinanceTracker.Controllers
                 return BadRequest("Invalid model");
             }
             var user = await _user.GetByIdAsync(userId);
-            var entity = new Job()
-            {
-                CompanyName = job.CompanyName,
-                HourlyRate = job.HourlyRate,
-                EmploymentType = job.EmploymentType,
-                TaxCard = job.TaxCard,
-                UserId = userId,
-                User = user
-            };
+
+
+            var entity = jobDto.Adapt<Job>();
+            entity.User = user;
+            entity.UserId = userId;
+
             await _job.AddAsync(entity);
             return Ok(entity);
         }
 
-        [HttpPost("UpdateJob")]
+        [HttpPut("UpdateJob/{companyName}")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<ActionResult> UpdateJob(JobDTO job)
+        public async Task<ActionResult> UpdateJob(string companyName, JobDTO jobDto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid model");
             }
-            var jobToUpdate = await _job.GetFirstOrDefaultAsync(x => x.UserId == userId && x.CompanyName == job.CompanyName);
+            var jobToUpdate = await _job.GetFirstOrDefaultAsync(x => x.UserId == userId && x.CompanyName == companyName);
             if (jobToUpdate == null)
             {
                 return NotFound("Job not found");
             }
-            jobToUpdate.CompanyName = job.CompanyName;
-            jobToUpdate.HourlyRate = job.HourlyRate;
-            jobToUpdate.EmploymentType = job.EmploymentType;
-            jobToUpdate.TaxCard = job.TaxCard;
+
+            jobDto.Adapt(jobToUpdate);
+
             await _job.UpdateAsync(jobToUpdate);
             return Ok(jobToUpdate);
         }
@@ -85,21 +82,22 @@ namespace FinanceTracker.Controllers
             {
                 return NotFound("Job not found for ");
             }
-            
-            return  Ok(userJobs);
+            var userJobsDto = userJobs.Adapt<IEnumerable<JobDTO>>();
+
+            return Ok(userJobsDto);
 
         }
 
-        [HttpDelete("DeleteJob")]
+        [HttpDelete("DeleteJob/{companyName}")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<IActionResult> DeleteJob(string companyName)
+        public async Task<IActionResult> DeleteJob([FromQuery] string companyName)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (companyName.IsNullOrEmpty()) return BadRequest("error please provide a company name");
             var jobToDelete = await _job.GetByIdAsync(companyName, userId);
             if (jobToDelete == null) return NotFound("Job not found");
-           await _job.DeleteAsync(jobToDelete);
+            await _job.DeleteAsync(jobToDelete);
             return Ok();
         }
 
