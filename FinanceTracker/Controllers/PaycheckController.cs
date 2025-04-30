@@ -86,19 +86,15 @@ namespace FinanceTracker.Controllers
 
             var paycheck = new Paycheck()
             {
-                SalarayBeforeTax = baseSalary,
+                GrossSalary = baseSalary,
                 WorkedHours = totalWorkedHours,
                 AMContribution = amcontribution,
                 Tax = tax,
-                SalarayAfterTax = salaryAfterTax,
-
+                NetSalary = salaryAfterTax,
+                TaxSum = taxDeduction
             };
 
             return Ok(paycheck);
         }
-
-
-
-
     }
 }

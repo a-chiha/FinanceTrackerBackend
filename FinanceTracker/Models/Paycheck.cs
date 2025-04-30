@@ -5,18 +5,15 @@ namespace FinanceTracker.Models
 {
     public class Paycheck
     {
-        public int PaycheckId { get; set; } // Dynamic
-        public decimal Tax { get; set; }
-        public decimal SalarayBeforeTax { get; set; } // Dynamic
-        public decimal HolidaySupplement { get; set; }
-        public decimal Pension { get; set; }
-        public decimal Holidaycompensation { get; set; }
-        public decimal SalarayAfterTax { get; set; }
-        public decimal taxDeduction { get; set; } // Dynamic
+        public int PaycheckId { get; set; } 
+        public decimal TaxSum { get; set; } // Tax 
 
-        public decimal AMContribution { get; set; }
+        public decimal Tax { get; set; } 
+        public decimal GrossSalary { get; set; } // SalarayBeforeTax
+ 
+        public decimal NetSalary { get; set; } // SalaryAfterTax
+
+        public decimal AMContribution { get; set; } 
         public TimeSpan WorkedHours { get; set; } // Dynamic
-
-
     }
 }
