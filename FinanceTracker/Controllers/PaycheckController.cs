@@ -31,7 +31,7 @@ namespace FinanceTracker.Controllers
             _job = job;
         }
 
-        [HttpPost("registerWorkshift")]
+        [HttpPost("RegisterWorkshift")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<IActionResult> RegisterWorkShift(WorkShift workShift)

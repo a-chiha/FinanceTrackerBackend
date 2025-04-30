@@ -1,0 +1,92 @@
+@startuml
+
+package Models {
+    class FinanceUser {
+        + int Age
+        + ICollection<Job> Jobs
+        + ICollection<WorkShift> WorkShifts
+    }
+
+    class Job {
+        + string? TaxCard
+        + string? EmploymentType
+        + string CompanyName
+        + decimal HourlyRate
+        + string UserId
+        + FinanceUser User
+    }
+
+    class WorkShift {
+        + DateTime StartTime
+        + DateTime EndTime
+        + string UserId
+        + FinanceUser User
+    }
+
+    class Paycheck {
+        + int PaycheckId
+        + decimal Tax
+        + decimal SalarayBeforeTax
+        + decimal HolidaySupplement
+        + decimal Pension
+        + decimal Holidaycompensation
+        + decimal SalarayAfterTax
+        + decimal taxDeduction
+        + decimal AMContribution
+        + TimeSpan WorkedHours
+    }
+}
+
+package DataAccess {
+    class FinanceTrackerContext {
+        + DbSet<FinanceUser> Users
+        + DbSet<Job> Jobs
+        + DbSet<WorkShift> WorkShifts
+    }
+
+    interface IDataAccessService<T> {
+        + Task<IEnumerable<T>> GetAllAsync()
+        + Task<T?> GetByIdAsync(params object[] keyValues)
+        + Task AddAsync(T entity)
+        + Task UpdateAsync(T entity)
+        + Task DeleteAsync(T entity)
+        + Task<IEnumerable<T>> GetFilteredAsync(Expression<Func<T, bool>> filter)
+        + Task<T?> GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter)
+    }
+
+    class DataAccessService<T> {
+        + Task<IEnumerable<T>> GetAllAsync()
+        + Task<T?> GetByIdAsync(params object[] keyValues)
+        + Task AddAsync(T entity)
+        + Task UpdateAsync(T entity)
+        + Task DeleteAsync(T entity)
+        + Task<IEnumerable<T>> GetFilteredAsync(Expression<Func<T, bool>> filter)
+        + Task<T?> GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter)
+    }
+}
+
+package Controllers {
+    class PaycheckController {
+        + Task<IActionResult> RegisterWorkShift(WorkShift workShift)
+        + Task<IActionResult> GeneratePayCheckForMonth(int CVR, int month)
+    }
+
+    class JobController {
+        + Task<ActionResult> RegisterJob(JobDTO job)
+        + Task<ActionResult> UpdateJob(JobDTO job)
+        + Task<IActionResult> GetAllJobsForUser()
+        + Task<IActionResult> DeleteJob(string companyName)
+    }
+
+    class AccountController {
+        + Task<ActionResult> Register(RegisterDTO input)
+        + Task<ActionResult> Login(LoginDTO input)
+    }
+}
+
+FinanceUser "1" --> "*" Job
+FinanceUser "1" --> "*" WorkShift
+Job "1" --> "1" FinanceUser
+WorkShift "1" --> "1" FinanceUser
+
+@enduml
