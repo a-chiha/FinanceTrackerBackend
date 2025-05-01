@@ -79,7 +79,7 @@ namespace FinanceTracker.Controllers
                 return BadRequest("404 error");
             }
 
-            var job = await _job.GetByIdAsync(UserId, companyName);
+            var job = await _job.GetByIdAsync(companyName, UserId);
 
             var workshiftsInMonth = await _workShift.GetFilteredAsync(w => w.StartTime.Month == month && w.UserId == UserId);
 
@@ -111,34 +111,6 @@ namespace FinanceTracker.Controllers
         }
 
 
-            var workShifts = await _workShift.GetFilteredAsync(w => 
-                w.UserId == userId && 
-                w.StartTime.Month == month);
-            
-            TimeSpan totalWorkedHours = TimeSpan.Zero;
-            foreach (var workShift in workShifts)
-            {
-                totalWorkedHours += workShift.EndTime - workShift.StartTime;
-            }
-            
-            decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate;
-            decimal amcontribution = baseSalary * 0.08m;
-            decimal salaryAfterAM = baseSalary - amcontribution;
-            decimal tax = 0.37m;
-            decimal taxDeduction = salaryAfterAM * tax;
-            decimal salaryAfterTax = salaryAfterAM - taxDeduction;
 
-            var paycheck = new Paycheck()
-            {
-                SalarayBeforeTax = baseSalary,
-                WorkedHours = totalWorkedHours,
-                AMContribution = amcontribution,
-                Tax = tax,
-                SalarayAfterTax = salaryAfterTax,
-                taxDeduction = taxDeduction
-            };
-
-            return Ok(paycheck);
-        }
     }
 }
