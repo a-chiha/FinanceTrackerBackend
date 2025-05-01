@@ -13,12 +13,12 @@ namespace FinanceTracker.Controllers
     [Route("[controller]")]
     [ApiController]
 
-    public class JobController : ControllerBase
+    public class JobsController : ControllerBase
     {
         private readonly IDataAccessService<Job> _job;
         private readonly IDataAccessService<FinanceUser> _user;
 
-        public JobController(IDataAccessService<Job> job, IDataAccessService<FinanceUser> financeUser)
+        public JobsController(IDataAccessService<Job> job, IDataAccessService<FinanceUser> financeUser)
         {
             _job = job;
             _user = financeUser;

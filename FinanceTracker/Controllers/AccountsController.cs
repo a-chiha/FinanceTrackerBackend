@@ -12,15 +12,15 @@ namespace FinanceTracker.Controllers
 {
     [Route("[Controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountsController : ControllerBase
     {
         private readonly FinanceTrackerContext _context;
-        private readonly ILogger<AccountController> _logger;
+        private readonly ILogger<AccountsController> _logger;
         private readonly IConfiguration _configuration;
         private readonly UserManager<FinanceUser> _userManager;
         private readonly SignInManager<FinanceUser> _signInManager;
 
-        public AccountController(FinanceTrackerContext context, ILogger<AccountController> logger,
+        public AccountsController(FinanceTrackerContext context, ILogger<AccountsController> logger,
             IConfiguration configuration, UserManager<FinanceUser> userManager,
             SignInManager<FinanceUser> signInManager)
         {
