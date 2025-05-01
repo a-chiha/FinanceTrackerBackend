@@ -105,7 +105,7 @@ namespace FinanceTracker.Controllers
                                 issuer: _configuration["JWT:Issuer"],
                                 audience: _configuration["JWT:Audience"],
                                 claims: claims,
-                                expires: DateTime.Now.AddSeconds(170000),
+                                expires: DateTime.Now.AddSeconds(3000),
                                 signingCredentials: signingCredentials);
                         var jwtString = new JwtSecurityTokenHandler()
                         .WriteToken(jwtObject);

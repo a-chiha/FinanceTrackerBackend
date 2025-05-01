@@ -37,7 +37,7 @@ namespace FinanceTracker.Controllers
                 return BadRequest("404 error");
             }
 
-            var job = await _job.GetByIdAsync(UserId, companyName);
+            var job = await _job.GetByIdAsync(companyName, UserId);
 
             var workshiftsInMonth = await _workShift.GetFilteredAsync(w => w.StartTime.Month == month && w.UserId == UserId);
             if (workshiftsInMonth == null) return NotFound("could not find any workshifts for the specified month and companyname");
