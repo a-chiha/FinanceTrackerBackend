@@ -116,14 +116,14 @@ namespace FinanceTracker.Controllers
         public async Task<IActionResult> GetAllUserJobs()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            
+
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized("User not authenticated");
             }
 
             var allJobs = await _job.GetFilteredAsync(j => j.UserId == userId);
-            
+
             return Ok(allJobs);
         }
 
@@ -133,29 +133,29 @@ namespace FinanceTracker.Controllers
         public async Task<IActionResult> GeneratePaycheckForSpecificJob(string companyName, int month)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            
+
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized("User not authenticated");
             }
 
             var job = await _job.GetByIdAsync(userId, companyName);
-            
+
             if (job == null)
             {
                 return NotFound($"Job at company '{companyName}' not found");
             }
 
-            var workShifts = await _workShift.GetFilteredAsync(w => 
-                w.UserId == userId && 
+            var workShifts = await _workShift.GetFilteredAsync(w =>
+                w.UserId == userId &&
                 w.StartTime.Month == month);
-            
+
             TimeSpan totalWorkedHours = TimeSpan.Zero;
             foreach (var workShift in workShifts)
             {
                 totalWorkedHours += workShift.EndTime - workShift.StartTime;
             }
-            
+
             decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate;
             decimal amcontribution = baseSalary * 0.08m;
             decimal salaryAfterAM = baseSalary - amcontribution;
@@ -165,11 +165,11 @@ namespace FinanceTracker.Controllers
 
             var paycheck = new Paycheck()
             {
-                SalarayBeforeTax = baseSalary,
+                SalaryBeforeTax = baseSalary,
                 WorkedHours = totalWorkedHours,
                 AMContribution = amcontribution,
                 Tax = tax,
-                SalarayAfterTax = salaryAfterTax,
+                SalaryAfterTax = salaryAfterTax,
                 taxDeduction = taxDeduction
             };
 
