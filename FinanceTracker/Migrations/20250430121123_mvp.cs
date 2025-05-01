@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FinanceTracker.Migrations
 {
     /// <inheritdoc />
-    public partial class MVP1 : Migration
+    public partial class mvp : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -163,6 +163,7 @@ namespace FinanceTracker.Migrations
                 {
                     CompanyName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TaxCard = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmploymentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HourlyRate = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
