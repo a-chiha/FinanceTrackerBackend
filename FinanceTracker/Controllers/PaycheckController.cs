@@ -1,6 +1,7 @@
 ﻿using FinanceTracker.DataAccess;
 using FinanceTracker.DTO;
 using FinanceTracker.Models;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +35,7 @@ namespace FinanceTracker.Controllers
         [HttpPost("workshift")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<IActionResult> RegisterWorkShift(WorkShiftDTO workShift)
+        public async Task<IActionResult> RegisterWorkShift(WorkShiftDTO workshift)
         {
             var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!ModelState.IsValid)
@@ -42,17 +43,14 @@ namespace FinanceTracker.Controllers
                 return BadRequest("Invalid model");
             }
             var user = await _user.GetByIdAsync(UserId);
-            var entity = new WorkShift
-            {
-                StartTime = workShift.StartTime,
-                EndTime = workShift.EndTime,
-                UserId = user.Id,
-                User = user
-            };
 
-            await _workShift.AddAsync(entity);
+            var newWorkshift = workshift.Adapt<WorkShift>();
+            newWorkshift.UserId = user.Id;
+            newWorkshift.User = user;
 
-            return CreatedAtAction(nameof(RegisterWorkShift), entity);
+            await _workShift.AddAsync(newWorkshift);
+
+            return CreatedAtAction(nameof(RegisterWorkShift), newWorkshift);
 
         }
 
@@ -82,10 +80,11 @@ namespace FinanceTracker.Controllers
             }
 
             var job = await _job.GetByIdAsync(UserId, companyName);
-            var workShifts = await _workShift.GetAllAsync();
-            var filteredWorkshifts = workShifts.Where(w => w.StartTime.Month == month && w.UserId == UserId).ToList();
+
+            var workshiftsInMonth = await _workShift.GetFilteredAsync(w => w.StartTime.Month == month && w.UserId == UserId);
+
             TimeSpan totalWorkedHours = TimeSpan.Zero;
-            foreach (var workShift in workShifts)
+            foreach (var workShift in workshiftsInMonth)
             {
                 totalWorkedHours += workShift.EndTime - workShift.StartTime;
             }
@@ -95,6 +94,8 @@ namespace FinanceTracker.Controllers
             decimal tax = 0.37m;
             decimal taxDeduction = salarayafterAM * tax;
             decimal salaryAfterTax = salarayafterAM - taxDeduction;
+
+
 
             var paycheck = new Paycheck()
             {
