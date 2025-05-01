@@ -12,9 +12,6 @@ namespace FinanceTracker.PaycheckCalculators
             if (age < 18) paycheckCalculator = new TeenPaycheckCalculator();
 
 
-
-
-
             return paycheckCalculator;
         }
 

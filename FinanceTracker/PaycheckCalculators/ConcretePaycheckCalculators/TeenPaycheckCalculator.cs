@@ -1,6 +1,6 @@
 ﻿namespace FinanceTracker.PaycheckCalculators.ConcretePaycheckCalculators
 {
-    public class TeenPaycheckCalculator
+    public class TeenPaycheckCalculator : PaycheckCalculator
     {
     }
 }
