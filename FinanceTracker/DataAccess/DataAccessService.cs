@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using FinanceTracker.Models;
 
 
 public class DataAccessService<T> : IDataAccessService<T> where T : class
@@ -52,4 +53,5 @@ public class DataAccessService<T> : IDataAccessService<T> where T : class
     {
         return await _dbSet.FirstOrDefaultAsync(filter);
     }
+
 }

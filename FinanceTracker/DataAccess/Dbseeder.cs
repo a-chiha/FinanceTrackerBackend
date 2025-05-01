@@ -36,7 +36,7 @@ namespace FinanceTracker.DataAccess
             context.Users.Add(user);
             context.SaveChanges();
 
-            // Get the user's ID
+            //Get the user's ID
             var userId = user.Id;
 
 
@@ -44,21 +44,21 @@ namespace FinanceTracker.DataAccess
             {
                 StartTime = new DateTime(2025, 4, 10, 9, 0, 0),
                 EndTime = new DateTime(2025, 4, 10, 17, 0, 0),
-                UserId = "ce9dc970-8ba1-4aee-af0f-6082a244800a",
+                UserId = "8f0e53b0-ec59-4295-9f05-269af52445bf",
             };
 
             var workshift1 = new WorkShift
             {
                 StartTime = new DateTime(2025, 4, 11, 9, 0, 0),
                 EndTime = new DateTime(2025, 4, 11, 17, 0, 0),
-                UserId = "ce9dc970-8ba1-4aee-af0f-6082a244800a",
+                UserId = "8f0e53b0-ec59-4295-9f05-269af52445bf",
             };
 
             var job = new Job
             {
                 CompanyName = "Demderveddet",
                 HourlyRate = 150,
-                UserId = "ce9dc970-8ba1-4aee-af0f-6082a244800a"
+                UserId = "8f0e53b0-ec59-4295-9f05-269af52445bf"
             };
 
             context.WorkShifts.Add(workshift);
