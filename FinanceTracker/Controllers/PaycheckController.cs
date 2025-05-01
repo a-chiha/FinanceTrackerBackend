@@ -31,10 +31,10 @@ namespace FinanceTracker.Controllers
             _job = job;
         }
 
-        [HttpPost("RegisterWorkshift")]
+        [HttpPost("workshift")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<IActionResult> RegisterWorkShift(WorkShift workShift)
+        public async Task<IActionResult> RegisterWorkShift(WorkShiftDTO workShift)
         {
             var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!ModelState.IsValid)
@@ -56,7 +56,19 @@ namespace FinanceTracker.Controllers
 
         }
 
-        [HttpGet]
+        [HttpGet("workshifts")]
+        [Authorize]
+        public async Task<IActionResult> GetAllWorkShiftsForUser()
+        {
+            var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var workshifts = await _workShift.GetFilteredAsync(x => x.UserId == UserId);
+
+            return Ok(workshifts);
+        }
+
+
+        [HttpGet("paycheck")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<IActionResult> GeneratePayCheckForMonth(string companyName, int month)
@@ -104,14 +116,14 @@ namespace FinanceTracker.Controllers
         public async Task<IActionResult> GetAllUserJobs()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
+            
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized("User not authenticated");
             }
 
             var allJobs = await _job.GetFilteredAsync(j => j.UserId == userId);
-
+            
             return Ok(allJobs);
         }
 
@@ -121,29 +133,29 @@ namespace FinanceTracker.Controllers
         public async Task<IActionResult> GeneratePaycheckForSpecificJob(string companyName, int month)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
+            
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized("User not authenticated");
             }
 
             var job = await _job.GetByIdAsync(userId, companyName);
-
+            
             if (job == null)
             {
                 return NotFound($"Job at company '{companyName}' not found");
             }
 
-            var workShifts = await _workShift.GetFilteredAsync(w =>
-                w.UserId == userId &&
+            var workShifts = await _workShift.GetFilteredAsync(w => 
+                w.UserId == userId && 
                 w.StartTime.Month == month);
-
+            
             TimeSpan totalWorkedHours = TimeSpan.Zero;
             foreach (var workShift in workShifts)
             {
                 totalWorkedHours += workShift.EndTime - workShift.StartTime;
             }
-
+            
             decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate;
             decimal amcontribution = baseSalary * 0.08m;
             decimal salaryAfterAM = baseSalary - amcontribution;
@@ -153,11 +165,11 @@ namespace FinanceTracker.Controllers
 
             var paycheck = new Paycheck()
             {
-                SalaryBeforeTax = baseSalary,
+                SalarayBeforeTax = baseSalary,
                 WorkedHours = totalWorkedHours,
                 AMContribution = amcontribution,
                 Tax = tax,
-                SalaryAfterTax = salaryAfterTax,
+                SalarayAfterTax = salaryAfterTax,
                 taxDeduction = taxDeduction
             };
 
