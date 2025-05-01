@@ -24,7 +24,7 @@ namespace FinanceTracker.Controllers
             _user = financeUser;
         }
 
-        [HttpPost("job")]
+        [HttpPost]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<ActionResult> RegisterJob(JobDTO jobDto)
@@ -45,7 +45,7 @@ namespace FinanceTracker.Controllers
             return Ok(entity);
         }
 
-        [HttpPut("job/{companyName}")]
+        [HttpPut("{companyName}")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<ActionResult> UpdateJob(string companyName, JobDTO jobDto)
@@ -67,7 +67,7 @@ namespace FinanceTracker.Controllers
             return Ok(jobToUpdate);
         }
 
-        [HttpGet("jobs")]
+        [HttpGet]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<IActionResult> GetAllJobsForUser()
@@ -88,7 +88,7 @@ namespace FinanceTracker.Controllers
 
         }
 
-        [HttpDelete("job/{companyName}")]
+        [HttpDelete("{companyName}")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<IActionResult> DeleteJob([FromQuery] string companyName)

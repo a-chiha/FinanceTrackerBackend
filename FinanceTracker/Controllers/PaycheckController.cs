@@ -66,7 +66,7 @@ namespace FinanceTracker.Controllers
         }
 
 
-        [HttpGet("paycheck")]
+        [HttpGet]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<IActionResult> GeneratePayCheckForMonth(string companyName, int month)
