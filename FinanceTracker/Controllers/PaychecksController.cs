@@ -16,13 +16,15 @@ namespace FinanceTracker.Controllers
 
         private readonly IDataAccessService<WorkShift> _workShift;
         private readonly IDataAccessService<Job> _job;
+        private readonly IDataAccessService<SupplementDetails> _supplementDetails;
 
 
 
-        public PaychecksController(IDataAccessService<WorkShift> workshift, IDataAccessService<Job> job)
+        public PaychecksController(IDataAccessService<WorkShift> workshift, IDataAccessService<Job> job, IDataAccessService<SupplementDetails> supplementDetails)
         {
             _workShift = workshift;
             _job = job;
+            _supplementDetails = supplementDetails;
         }
         [HttpGet]
         [Authorize]
@@ -38,14 +40,19 @@ namespace FinanceTracker.Controllers
             }
 
             var job = await _job.GetByIdAsync(companyName, UserId);
-
+            var suppplementDetails = await _supplementDetails.GetFilteredAsync(x => x.Job == job);
             var workshiftsInMonth = await _workShift.GetFilteredAsync(w => w.StartTime.Month == month && w.UserId == UserId);
+
             if (workshiftsInMonth == null) return NotFound("could not find any workshifts for the specified month and companyname");
 
+
+
             TimeSpan totalWorkedHours = TimeSpan.Zero;
+
             foreach (var workShift in workshiftsInMonth)
             {
                 totalWorkedHours += workShift.EndTime - workShift.StartTime;
+                //  totalWorkedHours += CalculateSupplementPayForWorkshift(workShift, suppplementDetails);
             }
             decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate;
             decimal amcontribution = baseSalary * 0.08m;
@@ -69,6 +76,10 @@ namespace FinanceTracker.Controllers
             return Ok(paycheck);
         }
 
+        private decimal CalculateSupplementPayForWorkshift(WorkShift workShifts, IEnumerable<SupplementDetails> supplementDetails)
+        {
+
+        }
 
 
     }
