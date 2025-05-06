@@ -11,5 +11,6 @@ public class WorkShift
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
     public string UserId { get; set; }
+    [JsonIgnore]
     public FinanceUser User { get; set; }
 }

@@ -1,10 +1,12 @@
-﻿using FinanceTracker.DataAccess;
+﻿using System.Runtime.InteropServices.JavaScript;
+using FinanceTracker.DataAccess;
 using FinanceTracker.DTO;
 using FinanceTracker.Models;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore.Internal;
 
 
 namespace FinanceTracker.Controllers
@@ -48,13 +50,16 @@ namespace FinanceTracker.Controllers
 
 
             TimeSpan totalWorkedHours = TimeSpan.Zero;
+            decimal totalSupplementPay = 0;
 
             foreach (var workShift in workshiftsInMonth)
             {
                 totalWorkedHours += workShift.EndTime - workShift.StartTime;
-                //  totalWorkedHours += CalculateSupplementPayForWorkshift(workShift, suppplementDetails);
+                totalSupplementPay += CalculateSupplementPayForWorkshift(workShift, suppplementDetails);
             }
-            decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate;
+
+            decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate + totalSupplementPay;
+
             decimal amcontribution = baseSalary * 0.08m;
             decimal salaryafterAM = baseSalary - amcontribution;
             decimal tax = 0.37m;
@@ -66,7 +71,7 @@ namespace FinanceTracker.Controllers
             var paycheck = new Paycheck()
             {
                 SalaryBeforeTax = baseSalary,
-                WorkedHours = totalWorkedHours,
+                WorkedHours = totalWorkedHours.TotalHours,
                 AMContribution = amcontribution,
                 Tax = tax,
                 SalaryAfterTax = salaryAfterTax,
@@ -76,11 +81,33 @@ namespace FinanceTracker.Controllers
             return Ok(paycheck);
         }
 
-        private decimal CalculateSupplementPayForWorkshift(WorkShift workShifts, IEnumerable<SupplementDetails> supplementDetails)
+        private decimal CalculateSupplementPayForWorkshift(WorkShift workShift, IEnumerable<SupplementDetails> supplementDetails)
         {
+            DateTime startTime = DateTime.MinValue;
+            DateTime endTime = DateTime.MinValue;
+            int i = 0;
+            var supplementDay = supplementDetails.FirstOrDefault(x => x.Weekday == workShift.StartTime.DayOfWeek);
+            for (; i <= 24; i++)
+            {
+                if (i >= workShift.StartTime.Hour && i <= workShift.EndTime.Hour && i >= supplementDay.StartTime.Hour &&
+                    i <= supplementDay.EndTime.Hour)
+                {
+                    startTime = workShift.StartTime.TimeOfDay > supplementDay.StartTime.TimeOfDay ? workShift.StartTime : supplementDay.StartTime;
+                    break;
+                }
+            }
+            if (startTime == DateTime.MinValue) return 0;
 
+            endTime = workShift.EndTime.TimeOfDay < supplementDay.EndTime.TimeOfDay ? workShift.EndTime : supplementDay.EndTime;
+
+            var timeSpace = endTime.TimeOfDay - startTime.TimeOfDay;
+            decimal hoursWorked = (decimal)timeSpace.TotalHours;
+            decimal hourlyRate = supplementDay.Amount; // e.g. 30
+            decimal salary = hoursWorked * hourlyRate;
+            return salary;
         }
-
-
+        //                                                          ---------------------------------
+        //                                     ----------------------------------------------
+        // 10    11   12     13      14       15      16     17    18      19      20       21      22       23     
     }
 }
