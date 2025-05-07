@@ -55,7 +55,7 @@ namespace FinanceTracker.Controllers
             {
                 return BadRequest("Invalid model");
             }
-            var jobToUpdate = await _job.GetFirstOrDefaultAsync(x => x.UserId == userId && x.CompanyName == companyName);
+            var jobToUpdate = await _job.GetByIdAsync(companyName, userId);
             if (jobToUpdate == null)
             {
                 return NotFound("Job not found");
@@ -91,7 +91,7 @@ namespace FinanceTracker.Controllers
         [HttpDelete("{companyName}")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<IActionResult> DeleteJob([FromQuery] string companyName)
+        public async Task<IActionResult> DeleteJob(string companyName)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (companyName.IsNullOrEmpty()) return BadRequest("error please provide a company name");
