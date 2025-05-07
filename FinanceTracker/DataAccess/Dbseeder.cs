@@ -61,6 +61,7 @@ namespace FinanceTracker.DataAccess
                 UserId = "8f0e53b0-ec59-4295-9f05-269af52445bf"
             };
 
+
             context.WorkShifts.Add(workshift);
             context.WorkShifts.Add(workshift1);
             context.Jobs.Add(job);
