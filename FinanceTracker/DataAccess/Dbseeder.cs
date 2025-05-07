@@ -44,21 +44,21 @@ namespace FinanceTracker.DataAccess
             {
                 StartTime = new DateTime(2025, 4, 10, 9, 0, 0),
                 EndTime = new DateTime(2025, 4, 10, 17, 0, 0),
-                UserId = "8f0e53b0-ec59-4295-9f05-269af52445bf",
+                UserId = userId,
             };
 
             var workshift1 = new WorkShift
             {
                 StartTime = new DateTime(2025, 4, 11, 9, 0, 0),
                 EndTime = new DateTime(2025, 4, 11, 17, 0, 0),
-                UserId = "8f0e53b0-ec59-4295-9f05-269af52445bf",
+                UserId = userId,
             };
 
             var job = new Job
             {
                 CompanyName = "Demderveddet",
                 HourlyRate = 150,
-                UserId = "8f0e53b0-ec59-4295-9f05-269af52445bf"
+                UserId = userId
             };
 
             context.WorkShifts.Add(workshift);

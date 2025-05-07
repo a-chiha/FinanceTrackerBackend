@@ -16,13 +16,18 @@ namespace FinanceTracker.Controllers
 
         private readonly IDataAccessService<WorkShift> _workShift;
         private readonly IDataAccessService<Job> _job;
+        private readonly IDataAccessService<Paycheck> _paycheck;
 
 
 
-        public PaychecksController(IDataAccessService<WorkShift> workshift, IDataAccessService<Job> job)
+        public PaychecksController
+            (IDataAccessService<WorkShift> workshift, 
+            IDataAccessService<Job> job,
+            IDataAccessService<Paycheck> paycheck)
         {
             _workShift = workshift;
             _job = job;
+            _paycheck = paycheck;
         }
         [HttpGet]
         [Authorize]
@@ -53,18 +58,21 @@ namespace FinanceTracker.Controllers
             decimal tax = 0.37m;
             decimal taxDeduction = salaryafterAM * tax;
             decimal salaryAfterTax = salaryafterAM - taxDeduction;
+            decimal vacationPay = baseSalary * 0.125m;
 
 
 
-            var paycheck = new Paycheck()
+            var paycheck = new Paycheck() // Skal være DTO
             {
                 SalaryBeforeTax = baseSalary,
                 WorkedHours = totalWorkedHours,
                 AMContribution = amcontribution,
                 Tax = tax,
                 SalaryAfterTax = salaryAfterTax,
-
+                VacationPay = vacationPay
             };
+
+            await _paycheck.AddAsync(paycheck);
 
             return Ok(paycheck);
         }

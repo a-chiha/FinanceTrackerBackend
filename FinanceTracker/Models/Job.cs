@@ -12,10 +12,9 @@ public class Job
     public string? TaxCard { get; set; }
     public string? EmploymentType { get; set; }
     public string CompanyName { get; set; }
+    public decimal VacationPay { get; set; }
     public decimal HourlyRate { get; set; }
     public string UserId { get; set; }
     [JsonIgnore]
     public FinanceUser User { get; set; }
-
-
 }

@@ -101,5 +101,15 @@ namespace FinanceTracker.Controllers
             return Ok();
         }
 
+        [HttpGet("VacationPAy")]
+        [Authorize]
+        [ResponseCache(CacheProfileName = "NoCache")]
+        public async Task<IActionResult> GetVacationPay(string CompanyName)
+        {
+
+            return Ok();
+        }
+
+
     }
 }

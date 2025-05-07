@@ -6,5 +6,6 @@ public class FinanceUser : IdentityUser
     public int Age { get; set; }
     public ICollection<Job> Jobs { get; set; }
     public ICollection<WorkShift> WorkShifts { get; set; }
+    public ICollection<Paycheck> Paychecks { get; set; }
 
 }

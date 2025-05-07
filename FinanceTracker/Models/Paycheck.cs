@@ -5,18 +5,16 @@ namespace FinanceTracker.Models
 {
     public class Paycheck
     {
-        public int PaycheckId { get; set; } // Dynamic
-        public decimal Tax { get; set; }
-        public decimal SalaryBeforeTax { get; set; } // Dynamic
-        public decimal HolidaySupplement { get; set; }
-        public decimal Pension { get; set; }
-        public decimal Holidaycompensation { get; set; }
-        public decimal SalaryAfterTax { get; set; }
-        public decimal taxDeduction { get; set; } // Dynamic
+        public int PaycheckId { get; set; }
 
+        public decimal SalaryBeforeTax { get; set; }
+        public TimeSpan WorkedHours { get; set; }
         public decimal AMContribution { get; set; }
-        public TimeSpan WorkedHours { get; set; } // Dynamic
+        public decimal Tax { get; set; }
+        public decimal SalaryAfterTax { get; set; }
+        public decimal VacationPay { get; set; }
 
-
+        [Range(1, 12, ErrorMessage = "Month must be between 1 and 12.")]
+        public int Month { get; set; }
     }
 }
