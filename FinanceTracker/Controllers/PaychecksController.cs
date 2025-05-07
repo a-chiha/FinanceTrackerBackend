@@ -87,6 +87,7 @@ namespace FinanceTracker.Controllers
             DateTime endTime = DateTime.MinValue;
             int i = 0;
             var supplementDay = supplementDetails.FirstOrDefault(x => x.Weekday == workShift.StartTime.DayOfWeek);
+            if (supplementDay == null) return 0;
             for (; i <= 24; i++)
             {
                 if (i >= workShift.StartTime.Hour && i <= workShift.EndTime.Hour && i >= supplementDay.StartTime.Hour &&
