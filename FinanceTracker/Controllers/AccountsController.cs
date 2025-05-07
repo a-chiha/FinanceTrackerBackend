@@ -49,8 +49,8 @@ namespace FinanceTracker.Controllers
                         _logger.LogInformation(
                         "User {userName} ({email}) has been created.",
                         newUser.UserName, newUser.Email);
-                        return StatusCode(201,
-                        $"User '{newUser.UserName}' has been created.");
+                        
+                        return StatusCode(201,input);
                     }
                     else
                         throw new Exception(

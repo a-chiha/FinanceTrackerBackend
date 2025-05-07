@@ -1,15 +1,15 @@
-﻿//using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-//namespace FinanceTracker.Models;
+namespace FinanceTracker.Models;
 
-//[PrimaryKey(nameof(StartTime), nameof(EndTime), nameof(CVR))]
-//public class SupplementDetails
-//{
-//    public DayOfWeek Weekday { get; set; }
-//    public decimal Amount { get; set; }
-//    public TimeOnly StartTime { get; set; }
-//    public TimeOnly EndTime { get; set; }
-//    public int CVR { get; set; }
-//    public Job Job { get; set; }
+[PrimaryKey(nameof(Weekday), nameof(CompanyName))]
+public class SupplementDetails
+{
+    public DayOfWeek Weekday { get; set; }
+    public decimal Amount { get; set; }
+    public DateTime StartTime { get; set; }
+    public DateTime EndTime { get; set; }
+    public string CompanyName { get; set; }
+    public Job Job { get; set; }
 
-//}
+}

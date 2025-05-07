@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinanceTracker.Migrations
 {
     [DbContext(typeof(FinanceTrackerContext))]
-    [Migration("20250430121123_mvp")]
-    partial class mvp
+    [Migration("20250506095606_supplementdetails")]
+    partial class supplementdetails
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,6 +118,38 @@ namespace FinanceTracker.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Jobs");
+                });
+
+            modelBuilder.Entity("FinanceTracker.Models.SupplementDetails", b =>
+                {
+                    b.Property<int>("Weekday")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("JobCompanyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("JobUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Weekday", "CompanyName");
+
+                    b.HasIndex("JobCompanyName", "JobUserId");
+
+                    b.ToTable("SupplementDetails");
                 });
 
             modelBuilder.Entity("FinanceTracker.Models.WorkShift", b =>
@@ -280,6 +312,17 @@ namespace FinanceTracker.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FinanceTracker.Models.SupplementDetails", b =>
+                {
+                    b.HasOne("FinanceTracker.Models.Job", "Job")
+                        .WithMany()
+                        .HasForeignKey("JobCompanyName", "JobUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Job");
                 });
 
             modelBuilder.Entity("FinanceTracker.Models.WorkShift", b =>

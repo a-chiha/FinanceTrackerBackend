@@ -15,7 +15,7 @@ namespace FinanceTracker.Models
         public decimal taxDeduction { get; set; } // Dynamic
 
         public decimal AMContribution { get; set; }
-        public TimeSpan WorkedHours { get; set; } // Dynamic
+        public double WorkedHours { get; set; } // Dynamic
 
 
     }
