@@ -83,7 +83,9 @@ namespace FinanceTracker.Controllers
             return Ok(paycheck);
         }
 
-        [HttpGet("test")]
+        [HttpGet("Total vacationPay")]
+        [Authorize]
+        [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<IActionResult> GetVacationPay(string companyName)
         {
             var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -111,9 +113,13 @@ namespace FinanceTracker.Controllers
             }
 
             decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate + totalSupplementPay;
-            decimal vacationPay = baseSalary * 0.125m;
+            var vacationPay = new VacationPayDTO()
+            { 
+                VacationPay = baseSalary * 0.125m
+            };
 
-            return Ok(vacationPay); // Skal ændres
+
+            return Ok(vacationPay); 
         }
 
         private decimal CalculateSupplementPayForWorkshift(WorkShift workShift, IEnumerable<SupplementDetails> supplementDetails)
