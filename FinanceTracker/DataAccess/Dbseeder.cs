@@ -54,6 +54,22 @@ namespace FinanceTracker.DataAccess
                 UserId = userId,
             };
 
+
+            var workshift2 = new WorkShift
+            {
+                StartTime = new DateTime(2025, 5, 11, 9, 0, 0),
+                EndTime = new DateTime(2025, 5, 11, 17, 0, 0),
+                UserId = userId,
+            };
+
+
+            var workshift3 = new WorkShift
+            {
+                StartTime = new DateTime(2025, 6, 11, 9, 0, 0),
+                EndTime = new DateTime(2025, 6, 11, 17, 0, 0),
+                UserId = userId,
+            };
+
             var job = new Job
             {
                 CompanyName = "Demderveddet",
