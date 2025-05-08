@@ -86,7 +86,7 @@ namespace FinanceTracker.Controllers
         [HttpGet("Total vacationPay")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<IActionResult> GetVacationPay(string companyName)
+        public async Task<IActionResult> GetTotalVacationPay(string companyName)
         {
             var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
