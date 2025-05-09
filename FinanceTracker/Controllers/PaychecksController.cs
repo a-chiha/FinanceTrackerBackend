@@ -38,7 +38,7 @@ namespace FinanceTracker.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest("404 error");
+                return BadRequest("Error");
             }
 
             var job = await _job.GetByIdAsync(companyName, UserId);
@@ -65,6 +65,7 @@ namespace FinanceTracker.Controllers
             decimal tax = 0.37m;
             decimal taxDeduction = salaryafterAM * tax;
             decimal salaryAfterTax = salaryafterAM - taxDeduction;
+            decimal vacationPay = baseSalary * 0.125m;
 
 
 
@@ -75,10 +76,50 @@ namespace FinanceTracker.Controllers
                 AMContribution = amcontribution,
                 Tax = tax,
                 SalaryAfterTax = salaryAfterTax,
+                VacationPay = vacationPay
 
             };
 
             return Ok(paycheck);
+        }
+
+        [HttpGet("Total vacationPay")]
+        [Authorize]
+        [ResponseCache(CacheProfileName = "NoCache")]
+        public async Task<IActionResult> GetTotalVacationPay(string companyName, int year)
+        {
+            var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("error");
+            }
+
+            var job = await _job.GetByIdAsync(companyName, UserId);
+            var suppplementDetails = await _supplementDetails.GetFilteredAsync(x => x.Job == job);
+            var workshifts = await _workShift.GetFilteredAsync(w => w.StartTime.Year == year && w.UserId == UserId);
+
+            if (workshifts == null) return NotFound("could not find any workshifts for the specified month and companyname");
+
+
+
+            TimeSpan totalWorkedHours = TimeSpan.Zero;
+            decimal totalSupplementPay = 0;
+
+            foreach (var workShift in workshifts)
+            {
+                totalWorkedHours += workShift.EndTime - workShift.StartTime;
+                totalSupplementPay += CalculateSupplementPayForWorkshift(workShift, suppplementDetails);
+            }
+
+            decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate + totalSupplementPay;
+            var vacationPay = new VacationPayDTO()
+            { 
+                VacationPay = baseSalary * 0.125m
+            };
+
+
+            return Ok(vacationPay); 
         }
 
         private decimal CalculateSupplementPayForWorkshift(WorkShift workShift, IEnumerable<SupplementDetails> supplementDetails)

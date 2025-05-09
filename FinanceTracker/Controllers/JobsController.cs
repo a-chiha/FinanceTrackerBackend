@@ -24,6 +24,8 @@ namespace FinanceTracker.Controllers
             _user = financeUser;
         }
 
+
+
         [HttpPost]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
