@@ -38,7 +38,7 @@ namespace FinanceTracker.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest("404 error");
+                return BadRequest("Error");
             }
 
             var job = await _job.GetByIdAsync(companyName, UserId);
@@ -86,18 +86,18 @@ namespace FinanceTracker.Controllers
         [HttpGet("Total vacationPay")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
-        public async Task<IActionResult> GetTotalVacationPay(string companyName)
+        public async Task<IActionResult> GetTotalVacationPay(string companyName, int year)
         {
             var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (!ModelState.IsValid)
             {
-                return BadRequest("404 error");
+                return BadRequest("error");
             }
 
             var job = await _job.GetByIdAsync(companyName, UserId);
             var suppplementDetails = await _supplementDetails.GetFilteredAsync(x => x.Job == job);
-            var workshifts = await _workShift.GetFilteredAsync(w => w.UserId == UserId);
+            var workshifts = await _workShift.GetFilteredAsync(w => w.StartTime.Year == year && w.UserId == UserId);
 
             if (workshifts == null) return NotFound("could not find any workshifts for the specified month and companyname");
 
