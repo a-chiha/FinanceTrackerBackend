@@ -42,6 +42,8 @@ namespace FinanceTracker.Controllers
             }
 
             var job = await _job.GetByIdAsync(companyName, UserId);
+            if (job == null) return NotFound("could not find job");
+
             var suppplementDetails = await _supplementDetails.GetFilteredAsync(x => x.Job == job);
             var workshiftsInMonth = await _workShift.GetFilteredAsync(w => w.StartTime.Month == month && w.UserId == UserId);
 
