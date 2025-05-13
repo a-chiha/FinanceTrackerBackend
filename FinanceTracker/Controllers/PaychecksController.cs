@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore.Internal;
+using System.Linq.Expressions;
 
 
 namespace FinanceTracker.Controllers
@@ -44,23 +45,7 @@ namespace FinanceTracker.Controllers
             var job = await _job.GetByIdAsync(companyName, UserId);
             if (job == null) return NotFound("could not find job");
 
-            var suppplementDetails = await _supplementDetails.GetFilteredAsync(x => x.Job == job);
-            var workshiftsInMonth = await _workShift.GetFilteredAsync(w => w.StartTime.Month == month && w.UserId == UserId);
-
-            if (workshiftsInMonth == null) return NotFound("could not find any workshifts for the specified month and companyname");
-
-
-
-            TimeSpan totalWorkedHours = TimeSpan.Zero;
-            decimal totalSupplementPay = 0;
-
-            foreach (var workShift in workshiftsInMonth)
-            {
-                totalWorkedHours += workShift.EndTime - workShift.StartTime;
-                totalSupplementPay += CalculateSupplementPayForWorkshift(workShift, suppplementDetails);
-            }
-
-            decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate + totalSupplementPay;
+            var (totalWorkedHours, baseSalary) = await CalculateSalaryPreTaxAndTotalHours((w => w.StartTime.Month == month && w.UserId == UserId), job);
 
             decimal amcontribution = baseSalary * 0.08m;
             decimal salaryafterAM = baseSalary - amcontribution;
@@ -98,31 +83,39 @@ namespace FinanceTracker.Controllers
             }
 
             var job = await _job.GetByIdAsync(companyName, UserId);
-            var suppplementDetails = await _supplementDetails.GetFilteredAsync(x => x.Job == job);
-            var workshifts = await _workShift.GetFilteredAsync(w => w.StartTime.Year == year && w.UserId == UserId);
+     
 
-            if (workshifts == null) return NotFound("could not find any workshifts for the specified month and companyname");
-
+            var (WorkedHours, salaryPreTax) = await CalculateSalaryPreTaxAndTotalHours((w => w.StartTime.Year == year && w.UserId == UserId), job);
 
 
+            var vacationPay = new VacationPayDTO()
+            {
+                VacationPay = salaryPreTax * 0.125m
+            };
+
+
+            return Ok(vacationPay);
+        }
+
+        private async Task<(TimeSpan totalWorkedHours, decimal baseSalary)> CalculateSalaryPreTaxAndTotalHours(Expression<Func<WorkShift, bool>> timeperiod, Job job)
+        {
+            var supplementDetails = await _supplementDetails.GetFilteredAsync(x => x.Job == job);
+
+            var workshifts = await _workShift.GetFilteredAsync(timeperiod);
+            if (workshifts == null) return (TimeSpan.Zero, 0);
             TimeSpan totalWorkedHours = TimeSpan.Zero;
             decimal totalSupplementPay = 0;
 
             foreach (var workShift in workshifts)
             {
                 totalWorkedHours += workShift.EndTime - workShift.StartTime;
-                totalSupplementPay += CalculateSupplementPayForWorkshift(workShift, suppplementDetails);
+                totalSupplementPay += CalculateSupplementPayForWorkshift(workShift, supplementDetails);
             }
-
-            decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate + totalSupplementPay;
-            var vacationPay = new VacationPayDTO()
-            { 
-                VacationPay = baseSalary * 0.125m
-            };
-
-
-            return Ok(vacationPay); 
+            var baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate + totalSupplementPay;
+            return (totalWorkedHours, baseSalary);
         }
+
+
 
         private decimal CalculateSupplementPayForWorkshift(WorkShift workShift, IEnumerable<SupplementDetails> supplementDetails)
         {
@@ -150,8 +143,6 @@ namespace FinanceTracker.Controllers
             decimal salary = hoursWorked * hourlyRate;
             return salary;
         }
-        //                                                          ---------------------------------
-        //                                     ----------------------------------------------
-        // 10    11   12     13      14       15      16     17    18      19      20       21      22       23     
+     
     }
 }
