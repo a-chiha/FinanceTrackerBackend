@@ -17,7 +17,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0.x'  # or 7.0.x depending on your project
+        dotnet-version: '8.0.x' # adjust if you're using .NET 7/6
 
     - name: Restore dependencies
       run: dotnet restore
@@ -25,17 +25,17 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Release
 
-    - name: Run tests
+    - name: Test
       run: dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage"
 
-    - name: Upload Test Results (Optional)
+    - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v3
       with:
         name: test-results
         path: '**/TestResults/*.trx'
 
-    - name: Upload Coverage Report (Optional)
+    - name: Upload coverage report
       if: always()
       uses: actions/upload-artifact@v3
       with:
