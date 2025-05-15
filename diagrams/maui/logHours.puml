@@ -1,0 +1,52 @@
+
+@startuml
+
+interface IWorkshiftService
+{
+AddWorkShift(WorkshiftDTO workshift): Task<WorkshiftDTO>
+GetAllWorkShifts(): Task<List<WorkshiftDTO>>
+}
+class LogHours
+{
+ + BindableObject BindingContext    
+
+}
+
+class LogHoursViewModel
+{
+ - IWorkshiftService workshiftService
+ + ObservableCollection<WorkshiftDTO> Workshifts
+ + DateTime selectedDate
+ + TimeSpan startTime
+ + TimeSpan endTime
+ + EventCollection<Event> events
+ + LogHoursViewModel(IWorkshiftService workshiftService)
+ + InitializeCalendar(): Task
+ + AddWorkShift(): Task
+}
+
+class WorkshiftDTO
+{
+ + DateTime StartTime
+ + DateTime EndTime
+}
+
+LogHoursViewModel --> IWorkshiftService
+
+class WorkshiftService {
+    - HttpClient _httpClient
+    + WorkshiftService(HttpClient httpClient)
+    + AddWorkShift(WorkshiftDTO workshift): Task<WorkshiftDTO> 
+    + GetAllWorkShifts(): Task<List<WorkshiftDTO>> 
+}
+
+
+WorkshiftService --> WorkshiftDTO
+IWorkshiftService --> WorkshiftDTO
+LogHoursViewModel --> WorkshiftDTO
+WorkshiftService ..|> IWorkshiftService
+
+LogHours --> LogHoursViewModel
+
+
+@enduml

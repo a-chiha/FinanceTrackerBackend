@@ -1,0 +1,47 @@
+
+
+@startuml
+
+participant "Frontend" as Frontend 
+participant "PaychecksController" as PaychecksController
+participant "Paycheck" as Paycheck
+participant "IDataAccessService<Job>" as Job
+participant "IDataAccessService<WorkShift>" as WorkShift
+participant "IDataAccessService<SupplementDetails>" as SupplementDetails
+participant "<<Database>>" as Database
+
+
+
+Frontend -> PaychecksController: GET /paychecks\n{companyName, month}
+PaychecksController -> PaychecksController: Validate request body
+opt Invalid request body
+PaychecksController -> Frontend: 400 bad request 
+end
+
+PaychecksController -> Job: GetByIdAsync(jobId,UserId)
+Job -> Database: get job
+Job --> PaychecksController: result: job or null
+PaychecksController -> SupplementDetails: GetFilteredAsync(x => x.Job == job)
+SupplementDetails -> Database: get SupplementDetails
+SupplementDetails --> PaychecksController: result: SupplementDetails or null
+
+PaychecksController -> WorkShift: GetFilteredAsync( => w.StartTime.Month == month && w.UserId == UserId)
+WorkShift -> Database: get WorkShifts
+WorkShift --> PaychecksController: result: WorkShifts or null
+
+opt no workshifts found
+PaychecksController -> Frontend: 404 not found
+
+end
+loop for each workshift in workshifts
+PaychecksController -> PaychecksController: totalWorkedHours += workshift.EndTime - workshift.StartTime
+
+PaychecksController -> PaychecksController: totalSupplementPay += CalculateSupplementPay(workshift, SupplementDetails)
+end
+
+PaychecksController -> Paycheck: new Paycheck()
+Paycheck --> PaychecksController: Paycheck object
+PaychecksController -> Frontend: 200 OK, Paycheck
+
+
+@enduml

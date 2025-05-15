@@ -1,0 +1,34 @@
+
+@startuml
+
+participant "Frontend" as Frontend
+participant "AccountsController" as AccountsController
+participant "UserManager" as UserManager
+participant "<<Database>>" as Database
+
+Frontend -> AccountsController: /accounts/login
+AccountsController -> AccountsController: Validate request body
+opt Invalid request body
+AccountsController -> Frontend: 400 bad request 
+end
+AccountsController -> UserManager: FindByNameAsync(username)
+UserManager -> Database: get user
+
+UserManager --> AccountsController: result: user or null
+
+AccountsController -> UserManager: CheckPasswordAsync(user, password)
+UserManager --> AccountsController: result: true or false
+
+alt User not found or incorrect password
+
+AccountsController -> Frontend: 401 unauthorized
+...
+else Correct password
+
+AccountsController -> Frontend: 200 OK, jwt token
+...
+end
+
+
+
+@enduml
