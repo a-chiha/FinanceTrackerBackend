@@ -41,3 +41,18 @@ jobs:
         with:
           name: code-coverage
           path: '**/TestResults/**/coverage.cobertura.xml'
+          
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: '**/TestResults/*.trx'
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage
+          path: '**/TestResults/**/coverage.cobertura.xml'
+
