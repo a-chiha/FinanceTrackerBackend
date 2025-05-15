@@ -1,5 +1,6 @@
 
 @startuml
+title Register Sequence Diagram
 participant "Frontend" as Frontend
 participant "AccountsController" as AccountsController
 participant "UserManager" as UserManager

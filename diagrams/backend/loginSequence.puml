@@ -1,6 +1,6 @@
 
 @startuml
-
+title Login Sequence Diagram
 participant "Frontend" as Frontend
 participant "AccountsController" as AccountsController
 participant "UserManager" as UserManager
@@ -13,7 +13,7 @@ AccountsController -> Frontend: 400 bad request
 end
 AccountsController -> UserManager: FindByNameAsync(username)
 UserManager -> Database: get user
-
+Database --> UserManager: result
 UserManager --> AccountsController: result: user or null
 
 AccountsController -> UserManager: CheckPasswordAsync(user, password)

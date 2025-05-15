@@ -5,9 +5,9 @@
 participant "Frontend" as Frontend 
 participant "PaychecksController" as PaychecksController
 participant "Paycheck" as Paycheck
-participant "IDataAccessService<Job>" as Job
-participant "IDataAccessService<WorkShift>" as WorkShift
-participant "IDataAccessService<SupplementDetails>" as SupplementDetails
+participant "IDAS<Job>" as Job
+participant "IDAS<WorkShift>" as WorkShift
+participant "IDAS<SupplementDetails>" as SupplementDetails
 participant "<<Database>>" as Database
 
 
@@ -20,14 +20,24 @@ end
 
 PaychecksController -> Job: GetByIdAsync(jobId,UserId)
 Job -> Database: get job
-Job --> PaychecksController: result: job or null
-PaychecksController -> SupplementDetails: GetFilteredAsync(x => x.Job == job)
-SupplementDetails -> Database: get SupplementDetails
-SupplementDetails --> PaychecksController: result: SupplementDetails or null
+Database --> Job: result: job or null
 
-PaychecksController -> WorkShift: GetFilteredAsync( => w.StartTime.Month == month && w.UserId == UserId)
-WorkShift -> Database: get WorkShifts
-WorkShift --> PaychecksController: result: WorkShifts or null
+Job --> PaychecksController: result: job or null
+
+opt job not found
+PaychecksController -> Frontend: 404 not found
+end
+
+PaychecksController -> PaychecksController: CalculateSalaryBeforeTaxAndTotalHours(timeperiod,job)
+
+PaychecksController -> SupplementDetails: GetFilteredAsync(job)
+SupplementDetails -> Database: get supplement details
+Database --> SupplementDetails: result: supplement details or null
+SupplementDetails --> PaychecksController: result: supplement details or null
+PaychecksController -> WorkShift: GetFilteredAsync(timeperiod)
+WorkShift -> Database: get workshifts
+Database --> WorkShift: result: workshifts or null
+PaychecksController <-- WorkShift: result: workshifts or null
 
 opt no workshifts found
 PaychecksController -> Frontend: 404 not found
