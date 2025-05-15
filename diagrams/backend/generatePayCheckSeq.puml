@@ -2,6 +2,8 @@
 
 @startuml
 
+title GET /Paychecks - Sequence Diagram
+
 participant "Frontend" as Frontend 
 participant "PaychecksController" as PaychecksController
 participant "Paycheck" as Paycheck
@@ -12,7 +14,7 @@ participant "<<Database>>" as Database
 
 
 
-Frontend -> PaychecksController: GET /paychecks\n{companyName, month}
+Frontend -> PaychecksController: GET /Paychecks\n{companyName, month}
 PaychecksController -> PaychecksController: Validate request body
 opt Invalid request body
 PaychecksController -> Frontend: 400 bad request 
