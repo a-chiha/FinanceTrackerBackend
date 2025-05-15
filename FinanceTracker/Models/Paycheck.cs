@@ -12,8 +12,7 @@ namespace FinanceTracker.Models
         public decimal Pension { get; set; }
         public decimal VacationPay { get; set; }
         public decimal SalaryAfterTax { get; set; }
-        public decimal taxDeduction { get; set; } // Dynamic
-
+        public decimal TaxDeduction { get; set; } // Dynamic
         public decimal AMContribution { get; set; }
         public double WorkedHours { get; set; } // Dynamic
 

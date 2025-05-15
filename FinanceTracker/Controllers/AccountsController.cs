@@ -14,21 +14,17 @@ namespace FinanceTracker.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly FinanceTrackerContext _context;
         private readonly ILogger<AccountsController> _logger;
         private readonly IConfiguration _configuration;
         private readonly UserManager<FinanceUser> _userManager;
-        private readonly SignInManager<FinanceUser> _signInManager;
 
-        public AccountsController(FinanceTrackerContext context, ILogger<AccountsController> logger,
+        public AccountsController(ILogger<AccountsController> logger,
             IConfiguration configuration, UserManager<FinanceUser> userManager,
             SignInManager<FinanceUser> signInManager)
         {
-            _context = context;
             _logger = logger;
             _configuration = configuration;
             _userManager = userManager;
-            _signInManager = signInManager;
         }
 
         [HttpPost("register")]
@@ -49,8 +45,8 @@ namespace FinanceTracker.Controllers
                         _logger.LogInformation(
                         "User {userName} ({email}) has been created.",
                         newUser.UserName, newUser.Email);
-                        
-                        return StatusCode(201,input);
+
+                        return StatusCode(201, input);
                     }
                     else
                         throw new Exception(
