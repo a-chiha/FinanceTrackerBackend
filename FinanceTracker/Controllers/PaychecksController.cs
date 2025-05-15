@@ -45,32 +45,28 @@ namespace FinanceTracker.Controllers
             var job = await _job.GetByIdAsync(companyName, UserId);
             if (job == null) return NotFound("could not find job");
 
-            var (totalWorkedHours, baseSalary) = await CalculateSalaryPreTaxAndTotalHours((w => w.StartTime.Month == month && w.UserId == UserId), job);
+            var (baseSalary, totalWorkedHours) = await CalculateSalaryBeforeTaxAndTotalHours((w => w.StartTime.Month == month && w.UserId == UserId), job);
 
             decimal amcontribution = baseSalary * 0.08m;
             decimal salaryafterAM = baseSalary - amcontribution;
-            decimal tax = 0.37m;
-            decimal taxDeduction = salaryafterAM * tax;
+            decimal taxDeduction = salaryafterAM * 0.37m;
             decimal salaryAfterTax = salaryafterAM - taxDeduction;
             decimal vacationPay = baseSalary * 0.125m;
-
-
 
             var paycheck = new Paycheck()
             {
                 SalaryBeforeTax = baseSalary,
                 WorkedHours = totalWorkedHours.TotalHours,
                 AMContribution = amcontribution,
-                Tax = tax,
+                Tax = 0.37m,
                 SalaryAfterTax = salaryAfterTax,
                 VacationPay = vacationPay
-
             };
 
             return Ok(paycheck);
         }
 
-        [HttpGet("Total vacationPay")]
+        [HttpGet("VacationPay")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<IActionResult> GetTotalVacationPay(string companyName, int year)
@@ -85,24 +81,24 @@ namespace FinanceTracker.Controllers
             var job = await _job.GetByIdAsync(companyName, UserId);
      
 
-            var (WorkedHours, salaryPreTax) = await CalculateSalaryPreTaxAndTotalHours((w => w.StartTime.Year == year && w.UserId == UserId), job);
+            var (salaryBeforeTax, WorkedHours) = await CalculateSalaryBeforeTaxAndTotalHours((w => w.StartTime.Year == year && w.UserId == UserId), job);
 
 
             var vacationPay = new VacationPayDTO()
             {
-                VacationPay = salaryPreTax * 0.125m
+                VacationPay = salaryBeforeTax * 0.125m
             };
 
 
             return Ok(vacationPay);
         }
 
-        private async Task<(TimeSpan totalWorkedHours, decimal baseSalary)> CalculateSalaryPreTaxAndTotalHours(Expression<Func<WorkShift, bool>> timeperiod, Job job)
+        private async Task<(decimal baseSalary, TimeSpan totalWorkedHours)> CalculateSalaryBeforeTaxAndTotalHours(Expression<Func<WorkShift, bool>> timeperiod, Job job)
         {
             var supplementDetails = await _supplementDetails.GetFilteredAsync(x => x.Job == job);
 
             var workshifts = await _workShift.GetFilteredAsync(timeperiod);
-            if (workshifts == null) return (TimeSpan.Zero, 0);
+            if (workshifts == null) return (0, TimeSpan.Zero);
             TimeSpan totalWorkedHours = TimeSpan.Zero;
             decimal totalSupplementPay = 0;
 
@@ -112,7 +108,7 @@ namespace FinanceTracker.Controllers
                 totalSupplementPay += CalculateSupplementPayForWorkshift(workShift, supplementDetails);
             }
             var baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate + totalSupplementPay;
-            return (totalWorkedHours, baseSalary);
+            return (baseSalary, totalWorkedHours);
         }
 
 
