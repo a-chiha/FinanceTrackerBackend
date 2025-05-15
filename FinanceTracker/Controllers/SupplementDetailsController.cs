@@ -24,7 +24,7 @@ namespace FinanceTracker.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> RegisterSupplementPay(List<SupplementDetailsDTO> supplementDetailsDTO,string companyName)
+        public async Task<IActionResult> RegisterSupplementPay(List<SupplementDetailsDTO> supplementDetailsDTO, string companyName)
         {
             if (!ModelState.IsValid)
             {
@@ -32,16 +32,29 @@ namespace FinanceTracker.Controllers
             }
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-           
-            
-            var job = await _jobService.GetByIdAsync(companyName,userId);
 
-            for(int i =0;i<supplementDetailsDTO.Count;i++)
+            foreach (var item in supplementDetailsDTO)
             {
-                var sd = supplementDetailsDTO[i].Adapt<SupplementDetails>();
-                sd.CompanyName = companyName;
-                sd.Job = job;
-               await _supplementDetails.AddAsync(sd);
+
+
+                var supplementDetail = await _supplementDetails.GetByIdAsync(item.Weekday, companyName);
+
+                if (supplementDetail == null)
+                {
+                    supplementDetail = item.Adapt<SupplementDetails>();
+
+                    var job = await _jobService.GetByIdAsync(companyName, userId);
+
+
+                    supplementDetail.CompanyName = companyName;
+                    supplementDetail.Job = job;
+                    await _supplementDetails.AddAsync(supplementDetail);
+                }
+                else
+                {
+                    supplementDetailsDTO.Adapt(supplementDetail);
+                    await _supplementDetails.UpdateAsync(supplementDetail);
+                }
             }
             return Ok(supplementDetailsDTO);
         }
