@@ -10,8 +10,8 @@ participant "IDAS<WorkShift>" as WorkShift
 participant "IDAS<SupplementDetails>" as SupplementDetails
 participant "<<Database>>" as Database
 
-
-
+activate Frontend
+activate PaychecksController
 Frontend -> PaychecksController: GET /paychecks\n{companyName, month}
 PaychecksController -> PaychecksController: Validate request body
 opt Invalid request body
@@ -19,11 +19,13 @@ PaychecksController -> Frontend: 400 bad request
 end
 
 PaychecksController -> Job: GetByIdAsync(jobId,UserId)
+activate Job
 Job -> Database: get job
+activate Database
 Database --> Job: result: job or null
-
+deactivate Database
 Job --> PaychecksController: result: job or null
-
+deactivate Job
 opt job not found
 PaychecksController -> Frontend: 404 not found
 end
@@ -31,14 +33,22 @@ end
 PaychecksController -> PaychecksController: CalculateSalaryBeforeTaxAndTotalHours(timeperiod,job)
 
 PaychecksController -> SupplementDetails: GetFilteredAsync(job)
+activate SupplementDetails
 SupplementDetails -> Database: get supplement details
+activate Database
 Database --> SupplementDetails: result: supplement details or null
+deactivate Database
+deactivate SupplementDetails
 SupplementDetails --> PaychecksController: result: supplement details or null
 PaychecksController -> WorkShift: GetFilteredAsync(timeperiod)
-WorkShift -> Database: get workshifts
-Database --> WorkShift: result: workshifts or null
-PaychecksController <-- WorkShift: result: workshifts or null
+activate WorkShift
 
+WorkShift -> Database: get workshifts
+activate Database
+Database --> WorkShift: result: workshifts or null
+deactivate Database
+PaychecksController <-- WorkShift: result: workshifts or null
+deactivate WorkShift
 opt no workshifts found
 PaychecksController -> Frontend: 404 not found
 
@@ -50,8 +60,10 @@ PaychecksController -> PaychecksController: totalSupplementPay += CalculateSuppl
 end
 
 PaychecksController -> Paycheck: new Paycheck()
+activate Paycheck
 Paycheck --> PaychecksController: Paycheck object
+deactivate Paycheck
 PaychecksController -> Frontend: 200 OK, Paycheck
-
-
+deactivate PaychecksController
+deactivate Frontend
 @enduml
