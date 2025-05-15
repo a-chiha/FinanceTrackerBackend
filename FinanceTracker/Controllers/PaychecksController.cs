@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore.Internal;
+using System.Linq.Expressions;
 
 
 namespace FinanceTracker.Controllers
@@ -44,48 +45,28 @@ namespace FinanceTracker.Controllers
             var job = await _job.GetByIdAsync(companyName, UserId);
             if (job == null) return NotFound("could not find job");
 
-            var suppplementDetails = await _supplementDetails.GetFilteredAsync(x => x.Job == job);
-            var workshiftsInMonth = await _workShift.GetFilteredAsync(w => w.StartTime.Month == month && w.UserId == UserId);
-
-            if (workshiftsInMonth == null) return NotFound("could not find any workshifts for the specified month and companyname");
-
-
-
-            TimeSpan totalWorkedHours = TimeSpan.Zero;
-            decimal totalSupplementPay = 0;
-
-            foreach (var workShift in workshiftsInMonth)
-            {
-                totalWorkedHours += workShift.EndTime - workShift.StartTime;
-                totalSupplementPay += CalculateSupplementPayForWorkshift(workShift, suppplementDetails);
-            }
-
-            decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate + totalSupplementPay;
+            var (baseSalary, totalWorkedHours) = await CalculateSalaryBeforeTaxAndTotalHours((w => w.StartTime.Month == month && w.UserId == UserId), job);
 
             decimal amcontribution = baseSalary * 0.08m;
             decimal salaryafterAM = baseSalary - amcontribution;
-            decimal tax = 0.37m;
-            decimal taxDeduction = salaryafterAM * tax;
+            decimal taxDeduction = salaryafterAM * 0.37m;
             decimal salaryAfterTax = salaryafterAM - taxDeduction;
             decimal vacationPay = baseSalary * 0.125m;
-
-
 
             var paycheck = new Paycheck()
             {
                 SalaryBeforeTax = baseSalary,
                 WorkedHours = totalWorkedHours.TotalHours,
                 AMContribution = amcontribution,
-                Tax = tax,
+                Tax = 0.37m,
                 SalaryAfterTax = salaryAfterTax,
                 VacationPay = vacationPay
-
             };
 
             return Ok(paycheck);
         }
 
-        [HttpGet("Total vacationPay")]
+        [HttpGet("VacationPay")]
         [Authorize]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<IActionResult> GetTotalVacationPay(string companyName, int year)
@@ -98,31 +79,39 @@ namespace FinanceTracker.Controllers
             }
 
             var job = await _job.GetByIdAsync(companyName, UserId);
-            var suppplementDetails = await _supplementDetails.GetFilteredAsync(x => x.Job == job);
-            var workshifts = await _workShift.GetFilteredAsync(w => w.StartTime.Year == year && w.UserId == UserId);
+     
 
-            if (workshifts == null) return NotFound("could not find any workshifts for the specified month and companyname");
-
+            var (salaryBeforeTax, WorkedHours) = await CalculateSalaryBeforeTaxAndTotalHours((w => w.StartTime.Year == year && w.UserId == UserId), job);
 
 
+            var vacationPay = new VacationPayDTO()
+            {
+                VacationPay = salaryBeforeTax * 0.125m
+            };
+
+
+            return Ok(vacationPay);
+        }
+
+        private async Task<(decimal baseSalary, TimeSpan totalWorkedHours)> CalculateSalaryBeforeTaxAndTotalHours(Expression<Func<WorkShift, bool>> timeperiod, Job job)
+        {
+            var supplementDetails = await _supplementDetails.GetFilteredAsync(x => x.Job == job);
+
+            var workshifts = await _workShift.GetFilteredAsync(timeperiod);
+            if (workshifts == null) return (0, TimeSpan.Zero);
             TimeSpan totalWorkedHours = TimeSpan.Zero;
             decimal totalSupplementPay = 0;
 
             foreach (var workShift in workshifts)
             {
                 totalWorkedHours += workShift.EndTime - workShift.StartTime;
-                totalSupplementPay += CalculateSupplementPayForWorkshift(workShift, suppplementDetails);
+                totalSupplementPay += CalculateSupplementPayForWorkshift(workShift, supplementDetails);
             }
-
-            decimal baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate + totalSupplementPay;
-            var vacationPay = new VacationPayDTO()
-            { 
-                VacationPay = baseSalary * 0.125m
-            };
-
-
-            return Ok(vacationPay); 
+            var baseSalary = (decimal)totalWorkedHours.TotalHours * job.HourlyRate + totalSupplementPay;
+            return (baseSalary, totalWorkedHours);
         }
+
+
 
         private decimal CalculateSupplementPayForWorkshift(WorkShift workShift, IEnumerable<SupplementDetails> supplementDetails)
         {
@@ -150,8 +139,6 @@ namespace FinanceTracker.Controllers
             decimal salary = hoursWorked * hourlyRate;
             return salary;
         }
-        //                                                          ---------------------------------
-        //                                     ----------------------------------------------
-        // 10    11   12     13      14       15      16     17    18      19      20       21      22       23     
+     
     }
 }
