@@ -9,7 +9,6 @@ GetAllWorkShifts(): Task<List<WorkshiftDTO>>
 class LogHours
 {
  + BindableObject BindingContext    
-
 }
 
 class LogHoursViewModel

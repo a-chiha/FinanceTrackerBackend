@@ -1,0 +1,45 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' Interfaces
+interface IAuthenticationService {
+    +Task<string?> Login(LoginDTO loginDTO)
+}
+
+' DTO
+class LoginDTO {
+    +string UserName
+    +string Password
+}
+
+' Services
+class AuthenticationService {
+    -HttpClient _httpClient
+    +AuthenticationService(HttpClient)
+    +Task<string?> Login(LoginDTO)
+}
+
+' ViewModels
+class LoginViewModel {
+    -IAuthenticationService _authenticationService
+    +LoginViewModel(IAuthenticationService)
+    +string Email
+    +string Password
+    +Task Login()
+    +Task NavigateToRegisterPage()
+}
+
+' Views
+class LoginPage {
+    -IAuthenticationService _authenticationService
+    +LoginPage(IAuthenticationService)
+}
+
+' Relationships
+LoginViewModel --> IAuthenticationService
+AuthenticationService ..|> IAuthenticationService
+LoginViewModel --> LoginDTO
+LoginPage --> LoginViewModel
+LoginPage --> IAuthenticationService
+
+@enduml
