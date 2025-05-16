@@ -1,38 +1,38 @@
 @startuml
-skinparam classAttributeIconSize 0
+
 
 ' Interfaces
 interface IAuthenticationService {
-    +Task<string?> Login(LoginDTO loginDTO)
+    + Login(LoginDTO loginDTO) Task<string?>
 }
 
 ' DTO
 class LoginDTO {
-    +string UserName
-    +string Password
+    + UserName string
+    + Password string
 }
 
 ' Services
 class AuthenticationService {
-    -HttpClient _httpClient
-    +AuthenticationService(HttpClient)
-    +Task<string?> Login(LoginDTO)
+    - _httpClient HttpClient
+    + AuthenticationService(HttpClient)
+    + Login(LoginDTO) Task<string?>
 }
 
 ' ViewModels
 class LoginViewModel {
-    -IAuthenticationService _authenticationService
-    +LoginViewModel(IAuthenticationService)
-    +string Email
-    +string Password
-    +Task Login()
-    +Task NavigateToRegisterPage()
+    - _authenticationService IAuthenticationService
+    + LoginViewModel(IAuthenticationService)
+    + Email string
+    + Password string
+    + Login() Task
+    + NavigateToRegisterPage() Task
 }
 
 ' Views
 class LoginPage {
-    -IAuthenticationService _authenticationService
-    +LoginPage(IAuthenticationService)
+    - _authenticationService IAuthenticationService
+    + LoginPage(IAuthenticationService)
 }
 
 ' Relationships
@@ -41,5 +41,6 @@ AuthenticationService ..|> IAuthenticationService
 LoginViewModel --> LoginDTO
 LoginPage --> LoginViewModel
 LoginPage --> IAuthenticationService
+
 
 @enduml
