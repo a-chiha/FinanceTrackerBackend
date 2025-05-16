@@ -1,0 +1,48 @@
+@startuml
+title Paycheck Feature - Class Diagram
+
+' UI Layer
+class PayCheckPage {
+    +CompanyEntry: Entry
+    +MonthEntry: Entry
+    +OnFetchTapped()
+}
+
+' ViewModel
+class PayCheckViewModel {
+    +FetchCommand
+    +SalaryEstimationForMonthCommand
+    +SalaryBeforeTax: decimal
+    +AMContribution: decimal
+    +Tax: decimal
+    +SalaryAfterTax: decimal
+    +WorkedHours: double
+}
+
+' Service Interface
+interface IPayCheckService {
+    +SalaryEstimationForMonth(string, int): Task<PayCheckDTO>
+}
+
+' Service Implementation
+class PayCheckService {
+    -_httpClient: HttpClient
+    +SalaryEstimationForMonth(string, int): Task<PayCheckDTO>
+}
+
+' DTO
+class PayCheckDTO {
+    +SalaryBeforeTax: decimal
+    +AMContribution: decimal
+    +Tax: decimal
+    +SalaryAfterTax: decimal
+    +WorkedHours: double
+}
+
+' Relationships
+PayCheckPage --> PayCheckViewModel : binds
+PayCheckViewModel --> IPayCheckService : uses
+PayCheckService ..|> IPayCheckService
+PayCheckService --> PayCheckDTO
+
+@enduml
