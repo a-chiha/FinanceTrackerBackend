@@ -1,0 +1,13 @@
+@startuml
+
+class FinanceTrackerContext {
+    + FinanceTrackerContext(options : DbContextOptions<FinanceTrackerContext>)
+
+    + WorkShifts : DbSet<WorkShift>
+    + Jobs : DbSet<Job>
+    + SupplementDetails : DbSet<SupplementDetails>
+}
+
+"IdentityDbContext<FinanceUser>" <|-- FinanceTrackerContext
+
+@enduml
