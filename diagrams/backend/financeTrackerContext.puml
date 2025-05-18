@@ -8,6 +8,20 @@ class FinanceTrackerContext {
     + SupplementDetails : DbSet<SupplementDetails>
 }
 
+
+class FinanceUser {     
++ ICollection<Job> Jobs
++ ICollection<WorkShift> WorkShifts
+}
+
+
+
+IdentityUser <|-- FinanceUser
+
+
+
+"IdentityDbContext<FinanceUser>" --> FinanceUser
+
 "IdentityDbContext<FinanceUser>" <|-- FinanceTrackerContext
 
 @enduml
