@@ -115,30 +115,18 @@ namespace FinanceTracker.Controllers
 
         private decimal CalculateSupplementPayForWorkshift(WorkShift workShift, IEnumerable<SupplementDetails> supplementDetails)
         {
-            DateTime startTime = DateTime.MinValue;
-            DateTime endTime = DateTime.MinValue;
-            int i = 0;
             var supplementDay = supplementDetails.FirstOrDefault(x => x.Weekday == workShift.StartTime.DayOfWeek);
             if (supplementDay == null) return 0;
-            for (; i <= 24; i++)
-            {
-                if (i >= workShift.StartTime.Hour && i <= workShift.EndTime.Hour && i >= supplementDay.StartTime.Hour &&
-                    i <= supplementDay.EndTime.Hour)
-                {
-                    startTime = workShift.StartTime.TimeOfDay > supplementDay.StartTime.TimeOfDay ? workShift.StartTime : supplementDay.StartTime;
-                    break;
-                }
-            }
-            if (startTime == DateTime.MinValue) return 0;
 
-            endTime = workShift.EndTime.TimeOfDay < supplementDay.EndTime.TimeOfDay ? workShift.EndTime : supplementDay.EndTime;
+            var start = workShift.StartTime > supplementDay.StartTime ? workShift.StartTime : supplementDay.StartTime;
+            var end = workShift.EndTime < supplementDay.EndTime ? workShift.EndTime : supplementDay.EndTime;
 
-            var timeSpace = endTime.TimeOfDay - startTime.TimeOfDay;
-            decimal hoursWorked = (decimal)timeSpace.TotalHours;
-            decimal hourlyRate = supplementDay.Amount; // e.g. 30
-            decimal salary = hoursWorked * hourlyRate;
-            return salary;
+            if (start >= end) return 0;
+
+            decimal hoursWorked = (decimal)(end - start).TotalHours;
+            return hoursWorked * supplementDay.Amount;
         }
-     
+
+
     }
 }
