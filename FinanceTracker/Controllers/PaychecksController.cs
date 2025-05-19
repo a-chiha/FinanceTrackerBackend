@@ -81,6 +81,13 @@ namespace FinanceTracker.Controllers
             var job = await _job.GetByIdAsync(companyName, UserId);
      
 
+            if(job == null) 
+
+            {
+
+                return NotFound();
+            }
+
             var (salaryBeforeTax, WorkedHours) = await CalculateSalaryBeforeTaxAndTotalHours((w => w.StartTime.Year == year && w.UserId == UserId), job);
 
 
