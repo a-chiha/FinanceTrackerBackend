@@ -122,7 +122,7 @@ public sealed class PaychecksControllerTests
     [Test]                                   // Z-1 – job not found
     public async Task VacationPay_JobMissing()
     {
-        var res = await _sut.GetTotalVacationPay("Missing", 2025) as NotFoundObjectResult;
+        var res = await _sut.GetTotalVacationPay("Missing", 2025) as NotFoundResult;
 
         Assert.That(res!.StatusCode, Is.EqualTo(StatusCodes.Status404NotFound));
     }

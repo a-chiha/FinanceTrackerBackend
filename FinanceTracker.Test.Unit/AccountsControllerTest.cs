@@ -18,8 +18,8 @@ namespace FinanceTracker.Tests.Controllers;
 [TestFixture]
 public sealed class AccountsControllerTests
 {
-    private FakeUserManager _users = null!;
-    private AccountsController _sut = null!;      // SUT = System-Under-Test
+    private FakeUserManager _users;
+    private AccountsController _sut;      // SUT = System-Under-Test
 
     #region ─── test life-cycle ───────────────────────────────────────
     [SetUp]
@@ -32,8 +32,8 @@ public sealed class AccountsControllerTests
             {
                 ["JWT:Issuer"] = "issuer",
                 ["JWT:Audience"] = "audience",
-                ["JWT:SigningKey"] = "0123456789ABCDEF"
-            })
+                ["JWT:SigningKey"] = "Khizer8!Khizer8!Khizer8!Khizer8!Khizer8!"
+			})
             .Build();
 
         _sut = new AccountsController(NullLogger<AccountsController>.Instance, cfg, _users, signInManager: null!)
@@ -82,7 +82,7 @@ public sealed class AccountsControllerTests
     [Test]                         // Z=0 happy path
     public async Task Login_OK_ReturnsJwt()
     {
-        var dto = new LoginDTO { Username = "john@example.com", Password = "ok" };
+        var dto = new LoginDTO { Username = "a@b.c", Password = "P@ssw0rd!" };
 
         var res = await _sut.Login(dto) as ObjectResult;
 

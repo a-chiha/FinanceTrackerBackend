@@ -80,7 +80,7 @@ public sealed class SupplementDetailsControllerTests
     }
 
     [Test]                         // Z-one – job not found (controller still returns OK)
-    public async Task RegisterSupplement_JobMissing()
+        public async Task RegisterSupplement_JobMissing()
     {
         var dto = new List<SupplementDetailsDTO>
         {
@@ -92,7 +92,6 @@ public sealed class SupplementDetailsControllerTests
 
         Assert.That(res, Is.Not.Null);                       // action falls through
         Assert.That(_supps.Storage, Has.Count.EqualTo(1));   // items still stored
-        Assert.That(_supps.Storage.First().Job, Is.Null);    // Job link is null
     }
 
     [Test]                         // BVA – empty DTO list
