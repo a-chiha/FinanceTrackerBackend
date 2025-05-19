@@ -11,12 +11,13 @@ class PayCheckPage {
 ' ViewModel
 class PayCheckViewModel {
     +FetchCommand
-    +SalaryEstimationForMonthCommand
+    +SalaryEstimationForMonth: Task
     +SalaryBeforeTax: decimal
     +AMContribution: decimal
     +Tax: decimal
     +SalaryAfterTax: decimal
     +WorkedHours: double
+    + Compare: Task
 }
 
 ' Service Interface
