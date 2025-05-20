@@ -1,0 +1,37 @@
+@startuml
+title løn-estimering og sammenligning - Sekvens Diagram
+participant "User" as User
+participant "PayCheckPage" as Page
+participant "PayCheckViewModel" as ViewModel
+participant "IPayCheckService" as ServiceInterface
+participant "backend-server" as BackendServer
+
+User -> Page : Enter Company Name and Month
+User -> Page : Click "Generer løn-estimation" Button
+activate Page
+Page -> ViewModel : SalaryEstimationForMonth()
+deactivate Page
+activate ViewModel
+ViewModel -> ServiceInterface : SalaryEstimationForMonth(string, int)
+activate ServiceInterface
+ServiceInterface -> BackendServer : HTTP GET
+activate BackendServer
+BackendServer -> ServiceInterface : PayCheckDTO
+deactivate BackendServer
+ServiceInterface -> ViewModel : PayCheckDTO
+deactivate ServiceInterface
+ViewModel -> ViewModel : Set binded properties
+deactivate ViewModel
+
+...
+
+User -> Page : Enter actual paycheck info
+User -> Page : Click "Compare" Button
+activate Page
+Page -> ViewModel : Compare()
+deactivate Page
+activate ViewModel
+ViewModel -> ViewModel : Indicate valid or invalid paycheck
+deactivate ViewModel
+
+@enduml

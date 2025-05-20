@@ -3,21 +3,17 @@ title Paycheck Feature - Class Diagram
 
 ' UI Layer
 class PayCheckPage {
-    +CompanyEntry: Entry
-    +MonthEntry: Entry
-    +OnFetchTapped()
 }
 
 ' ViewModel
 class PayCheckViewModel {
-    +FetchCommand
-    +SalaryEstimationForMonth: Task
+    +SalaryEstimationForMonth(): Task
     +SalaryBeforeTax: decimal
     +AMContribution: decimal
     +Tax: decimal
     +SalaryAfterTax: decimal
     +WorkedHours: double
-    + Compare: Task
+    + Compare(): Task
 }
 
 ' Service Interface
@@ -41,9 +37,11 @@ class PayCheckDTO {
 }
 
 ' Relationships
-PayCheckPage --> PayCheckViewModel : binds
-PayCheckViewModel --> IPayCheckService : uses
+PayCheckPage --> PayCheckViewModel : binds to
+PayCheckViewModel --> IPayCheckService
 PayCheckService ..|> IPayCheckService
 PayCheckService --> PayCheckDTO
+PayCheckViewModel --> PayCheckDTO
+IPayCheckService --> PayCheckDTO
 
 @enduml
