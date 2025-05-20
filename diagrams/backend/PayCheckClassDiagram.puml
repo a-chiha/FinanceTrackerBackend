@@ -1,25 +1,27 @@
 @startuml
-class PayCheckController {
+title PayChecksController - Class Diagram
+class PayChecksController {
     - workShiftService : IDataAccessService<WorkShift>
     - jobService : IDataAccessService<Job>
     - supplementDetailsService : IDataAccessService<SupplementDetails>
-    + PayCheckController(IDataAccessService<WorkShift>, IDataAccessService<Job>, IDataAccessService<SupplementDetails>)
-    - CalculateSupplementPayForWorkshift(workshift WorkShift, supplementDetails IEnumerable<SupplementDetails>) : decimal
+    + PayCheckController(_workShift IDAS<WorkShift>,_job IDAS<Job>,_supplementDetails IDAS<SupplementDetails>)
     + GeneratePayCheckForMonth(companyName string, month int) : Task<IActionResult>
     + GetTotalVacationPay(companyName string, year int) : Task<IActionResult>
-}
+    - CalculateSalaryBeforeTaxAndTotalHours(timeperiod Expression<Func<WorkShift, bool>>, job Job)
+    - CalculateSupplementPayForWorkshift(workshift WorkShift, supplementDetails IEnumerable<SupplementDetails>) : decimal
 
-class PayCheck {
-    + Tax : decimal
-    + HolidaySupplement : decimal
+}
+class Paycheck {
     + PaycheckId : int
-    + WorkHours : double
-    + TaxDeducation : decimal
-    + AM_contribution : decimal
-    + Pension : decimal
+    + Tax : decimal
     + SalaryBeforeTax : decimal
-    + SalaryAfterTax : decimal
+    + HolidaySupplement : decimal
+    + Pension : decimal
     + VacationPay : decimal
+    + SalaryAfterTax : decimal
+    + taxDeduction : decimal
+    + AMContribution : decimal
+    + WorkedHours : double
 }
 
 interface IDataAccessService<T> {
@@ -32,44 +34,8 @@ interface IDataAccessService<T> {
     + GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter) : Task<T>
 }
 
-class FinanceUser {
-    + Age : int
-    + Jobs : ICollection<Job>
-    + WorkShifts : ICollection<WorkShift>
-}
 
-class WorkShift {
-    + StartTime : DateTime
-    + EndTime : DateTime
-    + UserId : string
-    - User : FinanceUser <<JsonIgnore>>
-}
 
-class Job {
-    + Title : string?
-    + TaxCard : string?
-    + EmploymentType : string?
-    + CompanyName : string
-    + HourlyRate : decimal
-    + UserId : string
-    - User : FinanceUser <<JsonIgnore>>
-}
-
-class SupplementDetails {
-    + Weekday : DayOfWeek
-    + Amount : decimal
-    + StartTime : DateTime
-    + EndTime : DateTime
-    + CompanyName : string
-    + Job : Job
-}
-
-PayCheckController --> IDataAccessService
-PayCheckController --> PayCheck
-IDataAccessService --> WorkShift
-IDataAccessService --> Job
-IDataAccessService --> SupplementDetails
-WorkShift <--> FinanceUser
-Job <--> FinanceUser
-SupplementDetails --> Job
+PayChecksController "1" --> "3" IDataAccessService
+PayChecksController --> Paycheck
 @enduml
