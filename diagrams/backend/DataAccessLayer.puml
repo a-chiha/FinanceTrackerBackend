@@ -30,11 +30,7 @@ class DataAccessService<T> {
     + GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter) : Task<T>
 }
 
-class IdentityDbContext {
-}
 
-
-FinanceTrackerContext --|> IdentityDbContext 
 DataAccessService --> FinanceTrackerContext
 DataAccessService "1" ..|> "1" IDataAccessService 
 
