@@ -42,7 +42,7 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<FinanceTrackerContext>(options =>
 {
