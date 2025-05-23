@@ -1,0 +1,42 @@
+# Git
+.git
+.gitignore
+
+# Visual Studio files
+.vs
+*.user
+*.userosscache
+*.suo
+*.dbmdl
+*.jfm
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose*
+
+# Node.js (if applicable)
+node_modules/
+npm-debug.log
+
+# Environment files
+*.env
+.env*
+appsettings.*.json
+!appsettings.json 

@@ -1,6 +1,7 @@
 using FinanceTracker.DataAccess;
 using FinanceTracker.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,13 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<FinanceTrackerContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+    });
 });
 
 builder.Services.AddControllers(options =>
@@ -83,9 +90,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins(
+            "https://financetracker11.netlify.app",
+            "http://localhost:5173"  // for local development
+        )
                .AllowAnyMethod()
-               .AllowAnyHeader();
+               .AllowAnyHeader()
+               .AllowCredentials();
     });
 });
 
@@ -113,14 +124,93 @@ builder.Services.AddAuthentication(options =>
                 builder.Configuration["JWT:SigningKey"]))
     };
 });
+
+// Configure Data Protection
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo("/app/DataProtection-Keys"))
+    .SetApplicationName("FinanceTracker");
+
+// Configure port binding
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://+:{port}");
+
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+// Add a health check endpoint
+app.MapGet("/health", () => "OK");
+
+try
 {
-    var serviceProvider = scope.ServiceProvider;
-    var context = serviceProvider.GetRequiredService<FinanceTrackerContext>();
-    context.Database.Migrate();
-    Dbseeder.Initialize(context);
+    using (var scope = app.Services.CreateScope())
+    {
+        var serviceProvider = scope.ServiceProvider;
+        var context = serviceProvider.GetRequiredService<FinanceTrackerContext>();
+        
+        // Add retry logic for migrations
+        int retryCount = 0;
+        const int maxRetries = 5;
+        bool dbInitialized = false;
+        
+        while (!dbInitialized && retryCount < maxRetries)
+        {
+            try
+            {
+                // Check if connection works first
+                bool canConnect = false;
+                try
+                {
+                    canConnect = context.Database.CanConnect();
+                    Console.WriteLine($"Database connection test: {(canConnect ? "Success" : "Failed")}");
+                }
+                catch (Exception connEx)
+                {
+                    Console.WriteLine($"Database connection test exception: {connEx.Message}");
+                }
+
+                // Check if there are any migrations
+                var migrations = context.Database.GetPendingMigrations().ToList();
+                if (migrations.Any())
+                {
+                    Console.WriteLine($"Found {migrations.Count} pending migrations. Applying...");
+                    context.Database.Migrate();
+                }
+                else
+                {
+                    Console.WriteLine("No migrations found. Creating database if it doesn't exist...");
+                    // If no migrations, ensure database exists
+                    context.Database.EnsureCreated();
+                }
+                
+                // Initialize seed data
+                Dbseeder.Initialize(context);
+                dbInitialized = true;
+                Console.WriteLine("Database initialization completed successfully");
+            }
+            catch (Exception ex)
+            {
+                retryCount++;
+                Console.WriteLine($"Database initialization attempt {retryCount} failed: {ex.Message}");
+                
+                if (retryCount < maxRetries)
+                {
+                    // Wait before retrying with exponential backoff
+                    int delaySeconds = 10 * retryCount;
+                    Console.WriteLine($"Retrying in {delaySeconds} seconds...");
+                    Thread.Sleep(TimeSpan.FromSeconds(delaySeconds));
+                }
+                else
+                {
+                    Console.WriteLine("Failed to initialize database after multiple attempts.");
+                    // Continue without failing the application
+                }
+            }
+        }
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"An error occurred during startup: {ex.Message}");
+    // Continue without failing the application
 }
 
 // Configure the HTTP request pipeline.
@@ -128,6 +218,16 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    // For production
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Finance Tracker API v1");
+        c.RoutePrefix = "swagger";
+    });
 }
 
 app.UseCors("AllowAll");
