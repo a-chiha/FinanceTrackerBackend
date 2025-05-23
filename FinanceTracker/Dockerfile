@@ -8,19 +8,26 @@ EXPOSE 8080
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
 
+# Copy the project file and restore dependencies
 COPY ["FinanceTracker/FinanceTracker.csproj", "FinanceTracker/"]
 RUN dotnet restore "FinanceTracker/FinanceTracker.csproj"
 
+# Copy the entire source code
 COPY . .
-WORKDIR /app/FinanceTracker
-RUN dotnet publish -c Release -o out
+
+# Build and publish the application
+WORKDIR /src/FinanceTracker
+RUN dotnet publish -c Release -o /app/publish --no-restore
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
-COPY --from=build /app/FinanceTracker/out .
+COPY --from=build /app/publish .
+
+# Ensure we have the environment set
+ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Let the PORT environment variable be set by the hosting platform
 ENV ASPNETCORE_URLS=http://+:${PORT:-8080}
