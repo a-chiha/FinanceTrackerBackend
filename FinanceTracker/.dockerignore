@@ -38,5 +38,7 @@ npm-debug.log
 # Environment files
 *.env
 .env*
-appsettings.*.json
-!appsettings.json 
+# Allow appsettings files but exclude sensitive ones
+!appsettings.json
+!appsettings.Development.json
+!appsettings.Production.json 
