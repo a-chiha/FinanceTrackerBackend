@@ -9,7 +9,7 @@ participant "backend-server" as BackendServer
 User -> Page : Enter Company Name and Month
 User -> Page : Click "Generer løn-estimation" Button
 activate Page
-Page -> ViewModel : SalaryEstimationForMonth()
+Page -> ViewModel : SalaryEstimationForMonth.Execute()
 deactivate Page
 activate ViewModel
 ViewModel -> ServiceInterface : SalaryEstimationForMonth(string, int)
@@ -28,10 +28,21 @@ deactivate ViewModel
 User -> Page : Enter actual paycheck info
 User -> Page : Click "Compare" Button
 activate Page
-Page -> ViewModel : Compare()
+Page -> ViewModel : Compare.Execute()
 deactivate Page
 activate ViewModel
 ViewModel -> ViewModel : Indicate valid or invalid paycheck
+deactivate ViewModel
+
+
+
+
+User -> Page : Click "Generate PDF" Button
+activate Page
+Page -> ViewModel : GeneratePDF.Execute()
+deactivate Page
+activate ViewModel
+ViewModel -> ViewModel : Generate PDF
 deactivate ViewModel
 
 @enduml

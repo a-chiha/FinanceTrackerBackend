@@ -1,30 +1,31 @@
 @startuml
-title Login Sequence Diagram with alt
-
 actor User
 participant LoginPage
 participant LoginViewModel
 participant IAuthenticationService
 participant AuthenticationService
-participant HttpClient
 
-User -> LoginPage : Enter Email & Password
-User -> LoginPage : Tap "Login" button
-LoginPage -> LoginViewModel : Calls Login()
-LoginViewModel -> LoginDTO : Create with Email, Password
-LoginViewModel -> IAuthenticationService : Login(LoginDTO)
-IAuthenticationService -> AuthenticationService : Login(LoginDTO)
-AuthenticationService -> HttpClient : POST /login with LoginDTO
-HttpClient --> AuthenticationService : Response (token or null)
 
-alt Token returned (login success)
-    AuthenticationService --> IAuthenticationService : Return token
-    IAuthenticationService --> LoginViewModel : Return token
-    LoginViewModel --> LoginPage : Update UI to logged in state
-else Null returned (login failed)
-    AuthenticationService --> IAuthenticationService : Return null
-    IAuthenticationService --> LoginViewModel : Return null
-    LoginViewModel --> LoginPage : Show error message
-end
+User -> LoginPage : Click "Login"
+LoginPage -> LoginViewModel : LoginCommand.Execute()
+
+activate LoginViewModel
+
+LoginViewModel -> IAuthenticationService : Login(loginDTO)
+activate IAuthenticationService
+
+IAuthenticationService -> AuthenticationService : Login(loginDTO)
+activate AuthenticationService
+
+AuthenticationService -> AuthenticationService : Call HttpClient.PostAsync(...)
+AuthenticationService --> IAuthenticationService : return JWT token (or null)
+deactivate AuthenticationService
+
+IAuthenticationService --> LoginViewModel : token or null
+deactivate IAuthenticationService
+
+LoginViewModel -> LoginViewModel : Navigate or indicate error
+
+deactivate LoginViewModel
 
 @enduml

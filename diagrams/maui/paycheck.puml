@@ -7,13 +7,15 @@ class PayCheckPage {
 
 ' ViewModel
 class PayCheckViewModel {
-    +SalaryEstimationForMonth(): Task
+    +PayCheckViewModel(IPayCheckService)
+    +SalaryEstimationForMonthCommand: ICommand
     +SalaryBeforeTax: decimal
     +AMContribution: decimal
     +Tax: decimal
     +SalaryAfterTax: decimal
     +WorkedHours: double
-    + Compare(): Task
+    + CompareCommand: ICommand
+    + GeneratePDFCommand: ICommand
 }
 
 ' Service Interface
