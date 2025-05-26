@@ -31,6 +31,11 @@ class DataAccessService<T> {
 }
 
 
+
+
+"IdentityDbContext<T>" <|-- FinanceTrackerContext
+
+
 DataAccessService --> FinanceTrackerContext
 DataAccessService "1" ..|> "1" IDataAccessService 
 
