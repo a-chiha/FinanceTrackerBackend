@@ -1,5 +1,5 @@
 @startuml
-title AccountsController
+title Authentication Controller
 class AccountsController {
     - _context : FinanceTrackerContext
     - _logger : ILogger<AccountsController>
