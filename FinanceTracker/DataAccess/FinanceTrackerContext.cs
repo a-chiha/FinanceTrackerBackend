@@ -11,12 +11,9 @@ public class FinanceTrackerContext : IdentityDbContext<FinanceUser>
     {
     }
 
-    public DbSet<FinanceUser> Users { get; set; }
+    //public DbSet<FinanceUser> Users { get; set; }
     public DbSet<WorkShift> WorkShifts { get; set; }
     public DbSet<Job> Jobs { get; set; }
-
     public DbSet<SupplementDetails> SupplementDetails { get; set; }
-
-
 
 }

@@ -1,23 +1,13 @@
 @startuml
-title AccountsController
-class AccountsController {
-    - _context : FinanceTrackerContext
-    - _logger : ILogger<AccountsController>
-    - _configuration : IConfiguration
-    - _userManager : UserManager<FinanceUser>
-    - _signInManager : SignInManager<FinanceUser>
-    + AccountsController(FinanceTrackerContext, ILogger<AccountsController>, IConfiguration, UserManager<FinanceUser>, SignInManager<FinanceUser>)
+package "cd: Authentication Controller" {
+
+class AuthenticationController {
+    - _userManager : UserManager<TUser>
+    + AccountsController(userManager : UserManager<FinanceUser>)
     + Register(input : RegisterDTO) : Task<ActionResult>
     + Login(input : LoginDTO) : Task<ActionResult>
 }
 
-' interface ILogger<T> {
-'     + LogInformation(message : string, params object[] args) : void
-' }
-
-' interface IConfiguration {
-'     // Add configuration-related methods if needed
-' }
 
 class UserManager<TUser> {
     + CreateAsync(user : TUser, password : string) : Task<IdentityResult>
@@ -26,11 +16,6 @@ class UserManager<TUser> {
 }
 
 
-class FinanceUser {
-    + UserName : string
-    + Email : string
-    + Id : string
-}
 
 class RegisterDTO {
     + Email : string
@@ -42,10 +27,9 @@ class LoginDTO {
     + Password : string
 }
 
-AccountsController --> UserManager
-' AccountsController --> SignInManager
-AccountsController --> RegisterDTO
-AccountsController --> LoginDTO
-UserManager --> FinanceUser
+AuthenticationController --> UserManager
+AuthenticationController --> RegisterDTO
+AuthenticationController --> LoginDTO
 
 @enduml
+}

@@ -1,71 +1,55 @@
-
-
 @startuml
 
 title GET /Paychecks - Sequence Diagram
 
-participant "Frontend" as Frontend 
+participant "Frontend" as Frontend
 participant "PaychecksController" as PaychecksController
-participant "Paycheck" as Paycheck
-participant "IDAS<Job>" as Job
-participant "IDAS<WorkShift>" as WorkShift
-participant "IDAS<SupplementDetails>" as SupplementDetails
+
 participant "<<Database>>" as Database
 
-activate Frontend
 activate PaychecksController
-Frontend -> PaychecksController: GET /paychecks\n{companyName, month}
+
+Frontend -> PaychecksController: GET /Paychecks\n{companyName, month}
+
 PaychecksController -> PaychecksController: Validate request body
 opt Invalid request body
-PaychecksController -> Frontend: 400 bad request 
+    PaychecksController -> Frontend: 400 bad request
+
 end
 
-PaychecksController -> Job: GetByIdAsync(jobId,UserId)
-activate Job
-Job -> Database: get job
+PaychecksController -> Database: Query job by jobId and userId
 activate Database
-Database --> Job: result: job or null
+Database --> PaychecksController: job or null
 deactivate Database
-Job --> PaychecksController: result: job or null
-deactivate Job
 opt job not found
-PaychecksController -> Frontend: 404 not found
-end
-
-PaychecksController -> PaychecksController: CalculateSalaryBeforeTaxAndTotalHours(timeperiod,job)
-
-PaychecksController -> SupplementDetails: GetFilteredAsync(job)
-activate SupplementDetails
-SupplementDetails -> Database: get supplement details
-activate Database
-Database --> SupplementDetails: result: supplement details or null
-deactivate Database
-deactivate SupplementDetails
-SupplementDetails --> PaychecksController: result: supplement details or null
-PaychecksController -> WorkShift: GetFilteredAsync(timeperiod)
-activate WorkShift
-
-WorkShift -> Database: get workshifts
-activate Database
-Database --> WorkShift: result: workshifts or null
-deactivate Database
-PaychecksController <-- WorkShift: result: workshifts or null
-deactivate WorkShift
-opt no workshifts found
-PaychecksController -> Frontend: 404 not found
+    PaychecksController -> Frontend: 404 not found
 
 end
+
+PaychecksController -> PaychecksController: CalculateSalaryBeforeTaxAndTotalHours(timeperiod, job)
+activate PaychecksController
+PaychecksController -> Database: Query supplement details filtered by job
+activate Database
+Database --> PaychecksController: supplement details or null
+deactivate Database
+
+PaychecksController -> Database: Query workshifts filtered by timeperiod
+activate Database
+Database --> PaychecksController: workshifts or null
+deactivate Database
+
+
 loop for each workshift in workshifts
-PaychecksController -> PaychecksController: totalWorkedHours += workshift.EndTime - workshift.StartTime
-
-PaychecksController -> PaychecksController: totalSupplementPay += CalculateSupplementPay(workshift, SupplementDetails)
+    
+    PaychecksController -> PaychecksController: CalculateSupplementPayForWorkshift(workshift, supplementDetails)
+    activate PaychecksController
+    deactivate PaychecksController
 end
 
-PaychecksController -> Paycheck: new Paycheck()
-activate Paycheck
-Paycheck --> PaychecksController: Paycheck object
-deactivate Paycheck
-PaychecksController -> Frontend: 200 OK, Paycheck
 deactivate PaychecksController
-deactivate Frontend
+PaychecksController -> Frontend: 200 OK, Paycheck
+
+deactivate PaychecksController
+
+
 @enduml
