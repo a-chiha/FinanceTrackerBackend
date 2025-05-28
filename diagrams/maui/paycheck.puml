@@ -1,5 +1,6 @@
 @startuml
-title Paycheck Feature - Class Diagram
+package "cd: PaycheckPage" {
+
 
 ' UI Layer
 class PayCheckPage {
@@ -8,7 +9,7 @@ class PayCheckPage {
 ' ViewModel
 class PayCheckViewModel {
     +PayCheckViewModel(IPayCheckService)
-    +SalaryEstimationForMonthCommand: ICommand
+    +SalaryCalculationForMonthCommand: ICommand
     +SalaryBeforeTax: decimal
     +AMContribution: decimal
     +Tax: decimal
@@ -47,3 +48,4 @@ PayCheckViewModel --> PayCheckDTO
 IPayCheckService --> PayCheckDTO
 
 @enduml
+}

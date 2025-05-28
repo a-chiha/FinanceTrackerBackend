@@ -1,13 +1,13 @@
 
 @startuml
-title Login Sequence Diagram
 participant "Frontend" as Frontend
-participant "AccountsController" as AccountsController
+participant "AuthenticationController" as AccountsController
 participant "UserManager" as UserManager
 participant "<<Database>>" as Database
+
 activate Frontend
 activate AccountsController
-Frontend -> AccountsController: /accounts/login
+Frontend -> AccountsController: /Login
 AccountsController -> AccountsController: Validate request body
 opt Invalid request body
 AccountsController -> Frontend: 400 bad request 

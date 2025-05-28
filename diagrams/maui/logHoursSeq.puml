@@ -1,10 +1,11 @@
 @startuml 
-title Log Hours - Sequence Diagram
 actor User
 participant LogHoursPage
 participant LogHoursViewModel
 participant IWorkshiftService
 
+
+== Page Initialization ==
 User -> LogHoursPage : Opens Page
 activate LogHoursPage
 LogHoursPage -> LogHoursPage : OnAppearing()
@@ -22,6 +23,8 @@ loop For each workshift
 end loop
 deactivate LogHoursViewModel
 
+
+== Add Workshift ==
 User -> LogHoursPage : Select date and time interval
 User -> LogHoursPage : Click "Add workshift" Button
 activate LogHoursPage

@@ -1,6 +1,6 @@
 @startuml
-skinparam classAttributeIconSize 0
-title Data Access Layer
+package "cd: Data Access Layer" {
+
 
 class FinanceTrackerContext {
     + DbSet<FinanceUser> Users
@@ -37,6 +37,7 @@ class DataAccessService<T> {
 
 
 DataAccessService --> FinanceTrackerContext
-DataAccessService "1" ..|> "1" IDataAccessService 
+DataAccessService ..|> IDataAccessService 
 
 @enduml
+}
